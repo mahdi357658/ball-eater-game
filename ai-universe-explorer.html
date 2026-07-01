@@ -1,0 +1,2126 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Universe — Explore Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Premium fonts: Inter for English, Vazirmatn for Persian -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   DESIGN TOKENS & SYSTEM VARIABLES
+═══════════════════════════════════════════ */
+:root {
+  --void:         #07070a;
+  --surface-1:    rgba(14, 14, 22, 0.8);
+  --surface-2:    rgba(22, 22, 34, 0.9);
+  --surface-3:    #222235;
+  --border:       rgba(255, 255, 255, 0.06);
+  --border-mid:   rgba(255, 255, 255, 0.12);
+  --border-glow:  rgba(99, 102, 241, 0.3);
+  --text-1:       #f3f4f6;
+  --text-2:       #9ca3af;
+  --text-3:       #6b7280;
+  --accent:       #6366f1;
+  --accent-light: #818cf8;
+  --accent-dim:   rgba(99, 102, 241, 0.12);
+  --accent-glow:  rgba(99, 102, 241, 0.35);
+  --success:      #10b981;
+  --success-glow: rgba(16, 185, 129, 0.3);
+  --rail-w:       280px;
+  --radius:       12px;
+  --radius-sm:    8px;
+  --transition:   280ms cubic-bezier(0.16, 1, 0.3, 1);
+  --font-en:      'Inter', -apple-system, sans-serif;
+  --font-fa:      'Vazirmatn', sans-serif;
+}
+
+/* ═══════════════════════════════════════════
+   RESET & LAYOUT BASE
+═══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html {
+  font-size: 15px;
+  scroll-behavior: smooth;
+  background: var(--void);
+}
+
+body {
+  background: var(--void);
+  color: var(--text-1);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  transition: opacity var(--transition);
+}
+
+/* Class driven typography styling based on dir attribute */
+html[dir="rtl"] body {
+  font-family: var(--font-fa);
+}
+html[dir="ltr"] body {
+  font-family: var(--font-en);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+a { text-decoration: none; color: inherit; }
+svg { display: block; flex-shrink: 0; }
+
+/* ═══════════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════════ */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* ═══════════════════════════════════════════
+   VIEWS MANAGEMENT
+═══════════════════════════════════════════ */
+.view {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.view.active {
+  display: flex;
+  opacity: 1;
+}
+
+/* ═══════════════════════════════════════════
+   🏠 LANDING VIEW
+═══════════════════════════════════════════ */
+#view-home {
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 2rem;
+}
+
+#hero-canvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  opacity: 0.65;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Background Gradients */
+.hero-glow-1 {
+  position: absolute;
+  top: 15%; left: 25%;
+  width: 45vw; height: 45vw;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-content {
+  position: relative; z-index: 2;
+  text-align: center;
+  max-width: 800px;
+  animation: heroIn 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 16px;
+  background: var(--surface-1);
+  border: 1px solid var(--border-mid);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  border-radius: 100px;
+  font-size: 0.78rem; font-weight: 500;
+  color: var(--text-2);
+  margin-bottom: 2.5rem;
+  letter-spacing: 0.02em;
+}
+.hero-badge-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 10px var(--success);
+}
+
+.hero-h1 {
+  font-size: clamp(2.8rem, 6.5vw, 4.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-bottom: 1.5rem;
+  color: var(--text-1);
+}
+.hero-h1 em {
+  font-style: normal;
+  background: linear-gradient(135deg, #a5b4fc 0%, #6366f1 50%, #c084fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 30px rgba(99, 102, 241, 0.2);
+}
+
+.hero-sub {
+  font-size: 1.15rem;
+  font-weight: 300;
+  color: var(--text-2);
+  line-height: 1.8;
+  max-width: 620px;
+  margin: 0 auto 3.5rem;
+}
+
+.hero-cta {
+  display: flex; gap: 16px;
+  align-items: center; justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, var(--accent) 0%, #4f46e5 100%);
+  color: #fff;
+  font-size: 0.9rem; font-weight: 600;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition);
+  box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
+}
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(99, 102, 241, 0.55);
+}
+.btn-primary svg { transition: transform var(--transition); }
+/* Dynamic RTL/LTR arrow shift */
+html[dir="ltr"] .btn-primary:hover svg { transform: translateX(4px); }
+html[dir="rtl"] .btn-primary:hover svg { transform: translateX(-4px); }
+
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 28px;
+  color: var(--text-2);
+  font-size: 0.9rem; font-weight: 500;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-mid);
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
+  transition: all var(--transition);
+}
+.btn-ghost:hover {
+  color: var(--text-1);
+  border-color: var(--accent);
+  background: var(--accent-dim);
+  transform: translateY(-2px);
+}
+
+.hero-modules {
+  display: flex; gap: 16px; justify-content: center;
+  margin-top: 5rem;
+  flex-wrap: wrap;
+}
+.hero-module-chip {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 24px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem; font-weight: 600; color: var(--text-2);
+  transition: all var(--transition);
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+.hero-module-chip:hover {
+  border-color: var(--accent);
+  color: var(--text-1);
+  background: var(--accent-dim);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+  transform: translateY(-2px);
+}
+.hero-module-chip .chip-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════
+   💻 APP SHELL VIEW
+═══════════════════════════════════════════ */
+#view-app {
+  min-height: 100vh;
+  flex-direction: row;
+}
+
+/* ─── LEFT RAIL NAVIGATION ─── */
+.rail {
+  width: var(--rail-w);
+  flex-shrink: 0;
+  height: 100vh;
+  position: sticky; top: 0;
+  display: flex; flex-direction: column;
+  background: var(--surface-1);
+  backdrop-filter: blur(20px);
+  border-inline-end: 1px solid var(--border);
+  padding: 0;
+  z-index: 10;
+  box-shadow: 4px 0 40px rgba(0,0,0,0.3);
+}
+
+.rail-header {
+  padding: 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.rail-logo {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 1rem; font-weight: 700; color: var(--text-1);
+  letter-spacing: -0.02em;
+}
+.rail-logo-mark {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent) 0%, #4f46e5 100%);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+.rail-back {
+  width: 32px; height: 32px; border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-3); transition: all var(--transition);
+  border: 1px solid transparent;
+}
+.rail-back:hover {
+  color: var(--text-1);
+  border-color: var(--border);
+  background: var(--surface-2);
+}
+
+.rail-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 0;
+}
+
+.rail-section {
+  padding: 12px 16px;
+}
+.rail-section-label {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--text-3);
+  padding: 0 12px 10px;
+}
+
+/* Module navigation */
+.mod-nav { display: flex; flex-direction: column; gap: 4px; }
+.mod-btn {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 12px; border-radius: var(--radius-sm);
+  color: var(--text-2); font-size: 0.9rem; font-weight: 500;
+  transition: all var(--transition); cursor: pointer; width: 100%;
+  text-align: start;
+}
+.mod-btn:hover { background: var(--surface-2); color: var(--text-1); }
+.mod-btn.active {
+  background: var(--accent-dim);
+  color: var(--accent-light);
+  border-inline-start: 3px solid var(--accent);
+}
+.mod-icon {
+  width: 32px; height: 32px; border-radius: 8px; background: var(--surface-2);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  font-size: 0.95rem; transition: background var(--transition);
+}
+.mod-btn.active .mod-icon { background: var(--accent-glow); }
+.mod-label { flex: 1; }
+.mod-tag {
+  font-size: 0.62rem; background: var(--surface-3); color: var(--text-3);
+  padding: 2px 8px; border-radius: 4px; letter-spacing: 0.04em; font-weight: 700;
+}
+.mod-btn.active .mod-tag { background: var(--accent); color: #fff; }
+
+/* Sub-navigation nested elements */
+.sub-nav {
+  display: flex; flex-direction: column; gap: 2px;
+  padding-inline-start: 36px; margin-top: 4px;
+}
+.sub-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; border-radius: var(--radius-sm);
+  color: var(--text-3); font-size: 0.82rem; font-weight: 400;
+  transition: all var(--transition); cursor: pointer; width: 100%; text-align: start;
+}
+.sub-btn:hover { color: var(--text-2); background: var(--surface-2); }
+.sub-btn.active { color: var(--text-1); font-weight: 600; }
+.sub-btn::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--border-mid); flex-shrink: 0; transition: background var(--transition);
+}
+.sub-btn.active::before { background: var(--accent); }
+
+.rail-footer {
+  margin-top: auto;
+  padding: 18px 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.rail-footer-info {
+  font-size: 0.75rem; color: var(--text-3); line-height: 1.5;
+}
+.version-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.72rem; font-weight: 600;
+  color: var(--text-3);
+}
+.version-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); }
+
+/* ─── MAIN CONTENT CONTAINER ─── */
+.content-area {
+  flex: 1; min-height: 100vh;
+  overflow-y: auto; overflow-x: hidden;
+  background: var(--void);
+  position: relative;
+}
+
+/* Background Glowing Elements inside dashboard */
+.dashboard-glow {
+  position: absolute;
+  top: 0; right: 10%;
+  width: 30vw; height: 30vw;
+  background: radial-gradient(circle, var(--accent-dim) 0%, transparent 80%);
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Top bar navigation items */
+.topbar {
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(7,7,10,0.8);
+  backdrop-filter: blur(20px);
+  position: sticky; top: 0; z-index: 5;
+}
+.topbar-breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.85rem; color: var(--text-3);
+}
+.topbar-breadcrumb span { color: var(--text-1); font-weight: 600; }
+.topbar-breadcrumb svg { color: var(--text-3); }
+.topbar-actions { display: flex; align-items: center; gap: 12px; }
+.topbar-pill {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 14px; border-radius: 100px;
+  border: 1px solid var(--border-mid); background: var(--surface-1);
+  font-size: 0.75rem; font-weight: 500; color: var(--text-2);
+}
+.live-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--success); box-shadow: 0 0 8px var(--success);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* Module content wrapper */
+.module-page {
+  display: none; padding: 0;
+  animation: pageIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  position: relative; z-index: 1;
+}
+.module-page.active { display: block; }
+
+.module-hero {
+  padding: 56px 32px 40px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-start; gap: 28px;
+}
+.module-hero-icon {
+  width: 60px; height: 60px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 1.6rem;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+.module-eyebrow {
+  font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent-light); margin-bottom: 8px;
+}
+.module-h1 {
+  font-size: 2rem; font-weight: 800; letter-spacing: -0.03em;
+  color: var(--text-1); margin-bottom: 12px; line-height: 1.25;
+}
+.module-lead {
+  font-size: 0.98rem; color: var(--text-2); line-height: 1.75;
+  max-width: 750px;
+}
+.module-meta {
+  display: flex; gap: 24px; margin-top: 18px; flex-wrap: wrap;
+}
+.meta-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.8rem; color: var(--text-3);
+}
+.meta-item svg { color: var(--accent); flex-shrink: 0; }
+
+/* Tab system inside modules */
+.tab-bar {
+  display: flex; gap: 8px;
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  overflow-x: auto;
+}
+.tab-btn {
+  padding: 16px 20px;
+  font-size: 0.88rem; font-weight: 600;
+  color: var(--text-3);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+  transition: all var(--transition); cursor: pointer;
+}
+.tab-btn:hover { color: var(--text-1); }
+.tab-btn.active { color: var(--text-1); border-bottom-color: var(--accent); }
+
+/* Tab Content area styling */
+.tab-content { display: none; padding: 40px 32px; animation: pageIn 0.3s ease both; }
+.tab-content.active { display: block; }
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Grid systems & Cards */
+.content-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
+.content-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 32px; }
+
+.card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px; transition: all var(--transition);
+  position: relative; overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+.card:hover {
+  border-color: var(--border-glow);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(99,102,241,0.12);
+}
+.card-accent-line {
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  border-radius: 1px 1px 0 0;
+}
+.card-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-light); margin-bottom: 12px; }
+.card-title { font-size: 1.1rem; font-weight: 700; color: var(--text-1); margin-bottom: 10px; letter-spacing: -0.02em; }
+.card-body { font-size: 0.88rem; color: var(--text-2); line-height: 1.75; }
+
+.section-title {
+  font-size: 1.25rem; font-weight: 700; color: var(--text-1);
+  letter-spacing: -0.025em; margin-bottom: 8px;
+}
+.section-sub {
+  font-size: 0.92rem; color: var(--text-2); line-height: 1.7;
+  margin-bottom: 24px; max-width: 680px;
+}
+.divider { height: 1px; background: var(--border); margin: 36px 0; }
+
+/* Reference list indicators */
+.ref-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.ref-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 0.78rem; font-weight: 500; color: var(--text-2);
+}
+.ref-pill-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+/* Advanced stats counters */
+.stats-row { display: flex; gap: 1px; background: var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 36px; }
+.stat-block { flex: 1; background: var(--surface-1); padding: 24px; text-align: center; }
+.stat-value { font-size: 1.85rem; font-weight: 800; color: var(--text-1); letter-spacing: -0.03em; margin-bottom: 6px; }
+.stat-label { font-size: 0.75rem; color: var(--text-3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.stat-value .unit { font-size: 1rem; font-weight: 400; color: var(--text-3); margin-inline-start: 2px; }
+
+/* Learning Roadmap Timeline */
+.timeline { display: flex; flex-direction: column; gap: 0; }
+.tl-item { display: flex; gap: 20px; }
+.tl-left { display: flex; flex-direction: column; align-items: center; gap: 0; }
+.tl-dot {
+  width: 12px; height: 12px; border-radius: 50%; border: 3px solid var(--accent);
+  background: var(--void); flex-shrink: 0; margin-top: 6px;
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+.tl-line { width: 2px; flex: 1; background: var(--border); min-height: 48px; }
+.tl-item:last-child .tl-line { display: none; }
+.tl-content { padding-bottom: 28px; flex: 1; }
+.tl-label { font-size: 0.72rem; font-weight: 700; color: var(--accent-light); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+.tl-title { font-size: 1.05rem; font-weight: 700; color: var(--text-1); margin-bottom: 6px; }
+.tl-desc { font-size: 0.88rem; color: var(--text-2); line-height: 1.7; }
+
+/* Interactive Paradigm Accordions */
+.method-card {
+  background: var(--surface-1); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden; margin-bottom: 12px; transition: border-color var(--transition);
+}
+.method-card:hover { border-color: var(--border-mid); }
+.method-header {
+  display: flex; align-items: center; gap: 16px;
+  padding: 18px 24px; cursor: pointer; user-select: none;
+}
+.method-icon-box {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 1.1rem;
+}
+.method-title { font-size: 0.98rem; font-weight: 700; color: var(--text-1); flex: 1; }
+.method-chevron { color: var(--text-3); transition: transform var(--transition); }
+.method-card.open .method-chevron { transform: rotate(180deg); }
+.method-body { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.method-card.open .method-body { max-height: 500px; }
+.method-body-inner {
+  padding: 0 24px 24px; font-size: 0.9rem; color: var(--text-2); line-height: 1.8;
+  border-top: 1px solid var(--border); padding-top: 20px;
+}
+
+/* Deep Learning Architectures Grid */
+.arch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.arch-card {
+  background: var(--surface-1); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 24px;
+  transition: all var(--transition);
+}
+.arch-card:hover { border-color: var(--accent); box-shadow: 0 0 25px var(--accent-dim); }
+.arch-tag {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  margin-bottom: 12px; padding: 4px 10px; border-radius: 6px; display: inline-block;
+}
+.arch-name { font-size: 1.1rem; font-weight: 700; color: var(--text-1); margin-bottom: 8px; letter-spacing: -0.02em; }
+.arch-desc { font-size: 0.88rem; color: var(--text-2); line-height: 1.7; margin-bottom: 14px; }
+.arch-used { font-size: 0.78rem; color: var(--text-3); }
+.arch-used strong { color: var(--text-2); }
+
+/* Production Showcases */
+.company-row { display: flex; flex-direction: column; gap: 16px; }
+.company-card {
+  display: flex; align-items: flex-start; gap: 20px;
+  background: var(--surface-1); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 22px 24px; transition: all var(--transition);
+}
+.company-card:hover { border-color: var(--border-mid); background: var(--surface-2); }
+.company-logo {
+  width: 48px; height: 48px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; flex-shrink: 0;
+  background: var(--surface-3);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+.company-name { font-size: 1.05rem; font-weight: 700; color: var(--text-1); margin-bottom: 4px; }
+.company-use { font-size: 0.82rem; color: var(--accent-light); font-weight: 600; margin-bottom: 6px; }
+.company-desc { font-size: 0.88rem; color: var(--text-2); line-height: 1.7; }
+.company-tag {
+  display: inline-block; margin-top: 10px; font-size: 0.72rem; font-weight: 600;
+  padding: 3px 10px; border-radius: 4px; background: var(--surface-3); color: var(--text-3);
+}
+
+/* Callouts */
+.callout {
+  display: flex; gap: 16px; align-items: flex-start;
+  background: var(--accent-dim); border: 1px solid rgba(99,102,241,0.22);
+  border-radius: var(--radius); padding: 20px 24px; margin-bottom: 32px;
+}
+.callout-icon { color: var(--accent-light); flex-shrink: 0; margin-top: 2px; }
+.callout-text { font-size: 0.92rem; color: var(--text-2); line-height: 1.75; }
+.callout-text strong { color: var(--text-1); }
+
+/* ═══════════════════════════════════════════
+   🌐 BILINGUAL FLOATING SWITCHER
+═══════════════════════════════════════════ */
+.lang-toggle {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 100;
+  background: rgba(14, 14, 22, 0.85);
+  backdrop-filter: blur(15px);
+  border: 1px solid var(--border-mid);
+  padding: 5px;
+  border-radius: 100px;
+  display: flex;
+  gap: 4px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.lang-btn {
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border-radius: 100px;
+  color: var(--text-3);
+  transition: all var(--transition);
+}
+.lang-btn.active {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+}
+
+/* ═══════════════════════════════════════════
+   🚀 FLOATING HUB TOGGLER
+═══════════════════════════════════════════ */
+.hub-fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 100;
+  background: linear-gradient(135deg, var(--accent) 0%, #4f46e5 100%);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 100px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.45);
+  transition: all var(--transition);
+  animation: pulse-fab 2s infinite;
+}
+.hub-fab:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 12px 30px rgba(99, 102, 241, 0.6);
+}
+@keyframes pulse-fab {
+  0%, 100% { box-shadow: 0 8px 25px rgba(99, 102, 241, 0.45); }
+  50% { box-shadow: 0 8px 35px rgba(99, 102, 241, 0.7); }
+}
+
+/* ═══════════════════════════════════════════
+   🛍️ AI ECOSYSTEM HUB (APP-STORE STYLE MODAL)
+═══════════════════════════════════════════ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(5, 5, 8, 0.85);
+  backdrop-filter: blur(25px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 20px;
+}
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.modal-container {
+  width: 100%;
+  max-width: 960px;
+  background: rgba(18, 18, 28, 0.95);
+  border: 1px solid var(--border-mid);
+  border-radius: 20px;
+  box-shadow: 0 30px 70px rgba(0,0,0,0.8);
+  max-height: 85vh;
+  overflow-y: auto;
+  transform: scale(0.92) translateY(20px);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+.modal-overlay.open .modal-container {
+  transform: scale(1) translateY(0);
+}
+
+.modal-header {
+  padding: 24px 32px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0;
+  background: rgba(18, 18, 28, 0.95);
+  z-index: 10;
+  backdrop-filter: blur(10px);
+}
+.modal-title-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.modal-badge {
+  background: var(--accent-dim);
+  color: var(--accent-light);
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 100px;
+  border: 1px solid var(--border-glow);
+}
+.modal-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-1);
+}
+.modal-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--surface-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-2);
+  transition: all var(--transition);
+}
+.modal-close:hover {
+  background: var(--accent);
+  color: #fff;
+  transform: rotate(90deg);
+}
+
+.modal-body {
+  padding: 32px;
+  flex: 1;
+}
+
+/* Modal Search & Filter Bar */
+.modal-controls {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+.modal-search {
+  flex: 1;
+  min-width: 250px;
+  position: relative;
+}
+.modal-search input {
+  width: 100%;
+  padding: 12px 18px;
+  padding-inline-start: 45px;
+  background: var(--surface-1);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-sm);
+  color: var(--text-1);
+  font-size: 0.9rem;
+  outline: none;
+  transition: all var(--transition);
+}
+.modal-search input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 15px var(--accent-dim);
+}
+.modal-search svg {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  inset-inline-start: 16px;
+  color: var(--text-3);
+  pointer-events: none;
+}
+.filter-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.filter-btn {
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-2);
+  white-space: nowrap;
+  transition: all var(--transition);
+}
+.filter-btn:hover {
+  border-color: var(--border-mid);
+  color: var(--text-1);
+}
+.filter-btn.active {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent-light);
+}
+
+/* App Store Grid */
+.hub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+.hub-card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.hub-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  border-color: var(--accent);
+  box-shadow: 0 10px 25px rgba(99,102,241,0.2);
+}
+.hub-card.featured::after {
+  content: 'Featured';
+  position: absolute;
+  top: 10px; right: -25px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 2px 25px;
+  transform: rotate(45deg);
+  text-transform: uppercase;
+}
+html[dir="rtl"] .hub-card.featured::after {
+  left: -25px; right: auto;
+  transform: rotate(-45deg);
+}
+.hub-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.hub-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--surface-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+.hub-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-1);
+}
+.hub-card-category {
+  font-size: 0.68rem;
+  color: var(--accent-light);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.hub-card-desc {
+  font-size: 0.8rem;
+  color: var(--text-2);
+  line-height: 1.6;
+  flex: 1;
+}
+.hub-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+.hub-install-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--surface-3);
+  border-radius: 100px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent-light);
+  transition: all var(--transition);
+}
+.hub-card:hover .hub-install-btn {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ═══════════════════════════════════════════
+   📱 MOBILE & RESPONSIVE LAYOUT
+═══════════════════════════════════════════ */
+@media (max-width: 992px) {
+  :root { --rail-w: 100%; }
+  #view-app { flex-direction: column; }
+  .rail { width: 100%; height: auto; position: relative; }
+  .rail-section { display: none; }
+  .rail-section.mobile-show { display: flex; flex-direction: row; overflow-x: auto; padding: 10px 16px; }
+  .rail-section.mobile-show .mod-nav { flex-direction: row; gap: 8px; }
+  .rail-section.mobile-show .mod-btn { padding: 8px 16px; gap: 8px; font-size: 0.85rem; }
+  .rail-section.mobile-show .sub-nav { display: none; }
+  .content-area { min-height: auto; }
+  .module-hero { padding: 32px 20px 24px; flex-direction: column; gap: 16px; }
+  .tab-bar { padding: 0 16px; }
+  .tab-content { padding: 24px 16px; }
+  .content-grid-2, .content-grid-3, .arch-grid { grid-template-columns: 1fr; }
+  .stats-row { flex-direction: column; gap: 1px; }
+  .topbar { padding: 0 16px; }
+  .lang-toggle { bottom: 16px; left: 16px; }
+  .hub-fab { bottom: 16px; right: 16px; }
+  .modal-container { max-height: 90vh; }
+  .modal-header { padding: 18px 24px; }
+  .modal-body { padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     🏠 LANDING VIEW
+═══════════════════════════════════════════ -->
+<div id="view-home" class="view active">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-glow-1"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      <span data-lang="platform_beta">پلتفرم نسخه ۲.۰ — اکنون در بتای عمومی</span>
+    </div>
+
+    <h1 class="hero-h1">
+      <span data-lang="hero_title">درک عمیق<br><em>هوش مصنوعی</em><br>از اصول اولیه</span>
+    </h1>
+
+    <p class="hero-sub" data-lang="hero_subtitle">
+      جهان هوش مصنوعی یک محیط یادگیری ساختاریافته برای هوش مصنوعی، یادگیری ماشین و یادگیری عمیق است — ساخته شده برای مهندسان و متفکرانی که عمق می‌خواهند، نه تعاریف سطحی.
+    </p>
+
+    <div class="hero-cta">
+      <button class="btn-primary" onclick="enterApp()">
+        <span data-lang="enter_btn">ورود به جهان هوش مصنوعی</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <!-- Handled via arrow shift direction in CSS -->
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+      <button class="btn-ghost" onclick="enterApp('ml')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>
+        </svg>
+        <span data-lang="demo_btn">مشاهده دمو سریع</span>
+      </button>
+    </div>
+
+    <div class="hero-modules">
+      <div class="hero-module-chip" onclick="enterApp('ai')">
+        <span class="chip-dot" style="background:#818cf8"></span>
+        <span data-lang="mod_ai_title">هوش مصنوعی</span>
+      </div>
+      <div class="hero-module-chip" onclick="enterApp('ml')">
+        <span class="chip-dot" style="background:#34d399"></span>
+        <span data-lang="mod_ml_title">یادگیری ماشین</span>
+      </div>
+      <div class="hero-module-chip" onclick="enterApp('dl')">
+        <span class="chip-dot" style="background:#f472b6"></span>
+        <span data-lang="mod_dl_title">یادگیری عمیق</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     💻 APP SHELL VIEW
+═══════════════════════════════════════════ -->
+<div id="view-app" class="view">
+
+  <!-- LEFT RAIL NAV -->
+  <nav class="rail">
+    <div class="rail-header">
+      <div class="rail-logo">
+        <div class="rail-logo-mark">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+          </svg>
+        </div>
+        <span data-lang="brand_name">جهان هوش مصنوعی</span>
+      </div>
+      <button class="rail-back" onclick="goHome()" title="Home">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <!-- Dynamically rotated based on layout dir -->
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="rail-scroll-area">
+      <div class="rail-section mobile-show">
+        <div class="mod-nav">
+          <button class="mod-btn active" id="mod-btn-ai" onclick="switchModule('ai')">
+            <div class="mod-icon">🤖</div>
+            <span class="mod-label" data-lang="mod_ai_title">هوش مصنوعی</span>
+            <span class="mod-tag">AI</span>
+          </button>
+
+          <div class="sub-nav" id="sub-ai">
+            <button class="sub-btn active" onclick="switchTab('ai','overview')" data-lang="tab_overview">بررسی اجمالی</button>
+            <button class="sub-btn" onclick="switchTab('ai','capabilities')" data-lang="tab_capabilities">قابلیت‌ها</button>
+            <button class="sub-btn" onclick="switchTab('ai','applications')" data-lang="tab_applications">کاربردها</button>
+          </div>
+
+          <button class="mod-btn" id="mod-btn-ml" onclick="switchModule('ml')">
+            <div class="mod-icon">📊</div>
+            <span class="mod-label" data-lang="mod_ml_title">یادگیری ماشین</span>
+            <span class="mod-tag">ML</span>
+          </button>
+
+          <div class="sub-nav" id="sub-ml" style="display:none">
+            <button class="sub-btn active" onclick="switchTab('ml','definition')" data-lang="tab_definition">تعریف</button>
+            <button class="sub-btn" onclick="switchTab('ml','methods')" data-lang="tab_methods">روش‌ها</button>
+            <button class="sub-btn" onclick="switchTab('ml','usage')" data-lang="tab_usage">استفاده واقعی</button>
+          </div>
+
+          <button class="mod-btn" id="mod-btn-dl" onclick="switchModule('dl')">
+            <div class="mod-icon">🧠</div>
+            <span class="mod-label" data-lang="mod_dl_title">یادگیری عمیق</span>
+            <span class="mod-tag">DL</span>
+          </button>
+
+          <div class="sub-nav" id="sub-dl" style="display:none">
+            <button class="sub-btn active" onclick="switchTab('dl','concept')" data-lang="tab_concept">مفاهیم</button>
+            <button class="sub-btn" onclick="switchTab('dl','architectures')" data-lang="tab_architectures">معماری‌ها</button>
+            <button class="sub-btn" onclick="switchTab('dl','modern')" data-lang="tab_modern">هوش مدرن</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rail-footer">
+      <div class="rail-footer-info" data-lang="platform_sub">پلتفرم آموزشی پیشرفته</div>
+      <div class="version-badge">
+        <span class="version-dot"></span>
+        <span data-lang="version_label">نسخه پایدار ۲.۰</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="content-area">
+    <div class="dashboard-glow"></div>
+
+    <!-- Top Breadcrumbs bar -->
+    <div class="topbar">
+      <div class="topbar-breadcrumb">
+        <span id="bc-module">هوش مصنوعی</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="m9 18 6-6-6-6"/>
+        </svg>
+        <span id="bc-tab">بررسی اجمالی</span>
+      </div>
+      <div class="topbar-actions">
+        <button class="topbar-pill" onclick="openHub()">
+          <span class="live-dot"></span>
+          <span data-lang="hub_trigger_text">اکوسیستم ابزارها</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══ AI MODULE PAGE ═══ -->
+    <div class="module-page active" id="page-ai">
+      <div class="module-hero">
+        <div class="module-hero-icon" style="background:rgba(129,140,248,0.12);">🤖</div>
+        <div>
+          <div class="module-eyebrow" data-lang="module_01">ماژول ۰۱</div>
+          <h1 class="module-h1" data-lang="mod_ai_title">هوش مصنوعی</h1>
+          <p class="module-lead" data-lang="ai_hero_lead">علم ساخت سیستم‌هایی که هوشمندانه عمل می‌کنند — محیط را درک می‌کنند، روی اطلاعات استدلال می‌کنند و برای دستیابی به اهداف مشخص، اقداماتی انجام می‌دهند. هوش مصنوعی بیشتر یک فلسفه طراحی است تا صرفا یک فناوری.</p>
+          <div class="module-meta">
+            <div class="meta-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              <span data-lang="ai_meta_date">تاسیس ۱۹۵۶، دارتموث</span>
+            </div>
+            <div class="meta-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              <span>OpenAI · Google · DeepMind</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-bar" id="tabs-ai">
+        <button class="tab-btn active" onclick="switchTab('ai','overview')" data-lang="tab_overview">بررسی اجمالی</button>
+        <button class="tab-btn" onclick="switchTab('ai','capabilities')" data-lang="tab_capabilities">قابلیت‌ها</button>
+        <button class="tab-btn" onclick="switchTab('ai','applications')" data-lang="tab_applications">کاربردها</button>
+      </div>
+
+      <!-- AI: Overview -->
+      <div class="tab-content active" id="tab-ai-overview">
+        <div class="callout">
+          <svg class="callout-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <div class="callout-text" data-lang="ai_callout_1">
+            <strong>بینش کلیدی:</strong> هوش مصنوعی یک فناوری واحد نیست — بلکه طیفی از رویکردها است، از سیستم‌های خبره قانون‌محور تا عامل‌های عصبی خودآموز. آنچه آنها را متحد می‌کند هدف است: ماشین‌هایی که در محیط‌های نامطمئن عاقلانه عمل می‌کنند.
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-block"><div class="stat-value">$500<span class="unit">B</span></div><div class="stat-label" data-lang="ai_stat_1">بازار جهانی هوش مصنوعی تا ۲۰۳۰</div></div>
+          <div class="stat-block"><div class="stat-value">70<span class="unit">yr</span></div><div class="stat-label" data-lang="ai_stat_2">گذشته از پرسش آلن تورینگ</div></div>
+          <div class="stat-block"><div class="stat-value">3.5<span class="unit">B</span></div><div class="stat-label" data-lang="ai_stat_3">افراد استفاده کننده از هوش مصنوعی روزانه</div></div>
+          <div class="stat-block"><div class="stat-value">97<span class="unit">%</span></div><div class="stat-label" data-lang="ai_stat_4">سرمایه‌گذاری شرکت‌های برتر دنیا</div></div>
+        </div>
+
+        <div class="section-title" data-lang="ai_sec1_title">هوش مصنوعی واقعاً چیست؟</div>
+        <div class="section-sub" data-lang="ai_sec1_sub">زبان بازاریابی را کنار بگذارید؛ هوش مصنوعی یک شاخه مهندسی با هدفی مشخص است: ساخت سیستم‌هایی که رفتار آنها به طور کامل از قبل قابل پیش‌بینی نیست. این همان چیزی است که هوش مصنوعی را از نرم‌افزارهای کلاسیک متمایز می‌کند.</div>
+
+        <div class="content-grid-2">
+          <div class="card">
+            <div class="card-accent-line" style="background:linear-gradient(90deg,#818cf8,transparent)"></div>
+            <div class="card-label" data-lang="ai_card1_lbl">هوش مصنوعی محدود (Narrow AI)</div>
+            <div class="card-title" data-lang="ai_card1_title">هوشمندی مختص وظیفه ویژه</div>
+            <div class="card-body" data-lang="ai_card1_body">سیستم‌های امروزی — مانند GPT-4، AlphaFold، Tesla Autopilot — همگی هوش مصنوعی محدود هستند. آنها یک وظیفه خاص را با دقت فوق‌انسانی انجام می‌دهند اما هیچ ظرفیتی برای تعمیم و کارهای عمومی ندارند. یک موتور شطرنج نمی‌تواند شعر بنویسد؛ یک کلاسیفایر تصاویر توانایی رانندگی ندارد. این محدودیت رمز قدرت شگفت‌انگیز آنهاست.</div>
+          </div>
+          <div class="card">
+            <div class="card-accent-line" style="background:linear-gradient(90deg,#a78bfa,transparent)"></div>
+            <div class="card-label" data-lang="ai_card2_lbl">هوش عمومی (AGI)</div>
+            <div class="card-title" data-lang="ai_card2_title">مرز حل‌نشده علم</div>
+            <div class="card-body" data-lang="ai_card2_body">هوش مصنوعی عمومی (AGI) — سیستمی که بتواند مانند یک انسان در دامنه‌های مختلف استدلال کند — هنوز به صورت نظری باقی مانده است. شرکت‌هایی همچون OpenAI، Anthropic، و DeepMind به طور رسمی هدف بلندمدت خود را رسیدن به AGI قرار داده‌اند. اجماع دانشمندان: AGI امکان‌پذیر است، اما جدول زمانی آن بسیار مبهم است و بین ۵ تا ۵۰ سال تخمین زده می‌شود.</div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="section-title" data-lang="ai_sec2_title">سه پارادایم تکامل</div>
+        <div class="section-sub" data-lang="ai_sec2_sub">هوش مصنوعی از سه دوره تحقیقاتی متمایز با مفروضات متفاوت عبور کرده است.</div>
+
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
+            <div class="tl-content">
+              <div class="tl-label">۱۹۵۶ – دهه ۱۹۸۰</div>
+              <div class="tl-title" data-lang="ai_tl_t1">هوش مصنوعی نمادین و سیستم‌های خبره</div>
+              <div class="tl-desc" data-lang="ai_tl_d1">کدنویسی دستی قوانین و درخت‌های تصمیم منطقی. پروژه دیپ‌بلو شرکت IBM دانش شطرنج را به صورت صریح فرموله‌سازی کرد. سیستم در خارج از دامنه خود شکننده بود — هر موقعیتی که مهندسان پیش‌بینی نکرده بودند منجر به شکست کامل می‌شد.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
+            <div class="tl-content">
+              <div class="tl-label">دهه ۱۹۹۰ – دهه ۲۰۱۰</div>
+              <div class="tl-title" data-lang="ai_tl_t2">یادگیری ماشین آماری</div>
+              <div class="tl-desc" data-lang="ai_tl_d2">تغییر از قوانین دست‌نویس به الگوهای استخراج‌شده از داده‌ها. ماشین‌های بردار پشتیبان (SVM)، جنگل‌های تصادفی و شبکه‌های عصبی اولیه پدید آمدند. سیستم‌ها توانستند فراتر از داده‌های آموزشی خود تعمیم‌پذیری داشته باشند.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-left"><div class="tl-dot"></div></div>
+            <div class="tl-content">
+              <div class="tl-label">۲۰۱۲ – اکنون</div>
+              <div class="tl-title" data-lang="ai_tl_t3">یادگیری عمیق و مدل‌های پایه</div>
+              <div class="tl-desc" data-lang="ai_tl_d3">پیروزی مدل الکس‌نت (AlexNet) در رقابت‌های پردازش تصویر سال ۲۰۱۲ مسیر هوش مصنوعی را دگرگون کرد. مقیاس عظیم — داده‌های بیشتر، محاسبات سنگین‌تر، پارامترهای نجومی — به پیشرفت مداوم منجر شد. چت‌بات‌های پیشرفته امروزی بر همین اصول استوارند.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI: Capabilities -->
+      <div class="tab-content" id="tab-ai-capabilities">
+        <div class="section-title" data-lang="cap_title">سیستم‌های امروزی چه کارهایی می‌توانند انجام دهند؟</div>
+        <div class="section-sub" data-lang="cap_subtitle">نه آنچه در آینده دور ممکن است رخ دهد — بلکه سیستم‌های مستقر شده در مقیاس وسیع که توسط محصولات واقعی تایید شده‌اند.</div>
+
+        <div class="content-grid-3">
+          <div class="card">
+            <div class="card-accent-line" style="background:linear-gradient(90deg,#818cf8,transparent)"></div>
+            <div class="card-label" data-lang="cap_c1_lbl">زبان طبیعی</div>
+            <div class="card-title" data-lang="cap_c1_title">درک و تولید متن روان</div>
+            <div class="card-body" data-lang="cap_c1_body">مدل‌های بزرگ زبان در آزمون‌های حقوقی قبول می‌شوند، کدهای برنامه‌نویسی برای فرآیندهای تجاری می‌نویسند و کتاب‌های طولانی را در کسری از ثانیه خلاصه می‌کنند. پردازش صدها هزار توکن در یک درخواست اکنون واقعی است.</div>
+          </div>
+          <div class="card">
+            <div class="card-accent-line" style="background:linear-gradient(90deg,#34d399,transparent)"></div>
+            <div class="card-label" data-lang="cap_c2_lbl">بینایی ماشین</div>
+            <div class="card-title" data-lang="cap_c2_title">دیدن و تفسیر همزمان تصاویر</div>
+            <div class="card-body" data-lang="cap_c2_body">سیستم‌های تصویربرداری پزشکی، بیماری‌های شبکیه چشم را با دقت بالای ۹۰ درصد تشخیص می‌دهند. خودروهای خودران فیدهای ویدیویی چندگانه را با نرخ فریم بسیار بالا پردازش می‌کنند تا در ترافیک شهری ناوبری کنند.</div>
+          </div>
+          <div class="card">
+            <div class="card-accent-line" style="background:linear-gradient(90deg,#f472b6,transparent)"></div>
+            <div class="card-label" data-lang="cap_c3_lbl">استدلال</div>
+            <div class="card-title" data-lang="cap_c3_title">برنامه‌ریزی و حل مسائل چندمرحله‌ای</div>
+            <div class="card-body" data-lang="cap_c3_body">مدل‌های ریاضی جدید پیچیده‌ترین مسائل المپیاد را حل می‌کنند. مدل‌های استدلالی با استفاده از تکنیک‌های زنجیره اندیشه (Chain-of-thought) به دقت علمی در سطح آزمون‌های دکترا دست می‌یابند.</div>
+          </div>
+        </div>
+
+        <div class="callout">
+          <svg class="callout-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <div class="callout-text" data-lang="cap_callout">
+            <strong>محدودیت بسیار مهم:</strong> تمامی سیستم‌های هوش مصنوعی فعلی تطبیق‌دهنده‌های الگو براساس داده‌های تاریخی هستند. در صورت مواجهه با ورودی‌هایی که تفاوت بنیادینی با توزیع آموزشی آنها دارند، ممکن است دچار خطای فاحش شوند که به آن انحراف توزیع (Distributional Shift) می‌گویند.
+          </div>
+        </div>
+      </div>
+
+      <!-- AI: Applications -->
+      <div class="tab-content" id="tab-ai-applications">
+        <div class="section-title" data-lang="app_title">استقرارهای واقعی در مقیاس کلان</div>
+        <div class="section-sub" data-lang="app_subtitle">اینها نمونه‌های آزمایشی آزمایشگاهی نیستند — بلکه سیستم‌های تجاری هستند که روزانه به میلیون‌ها کاربر خدمات می‌دهند.</div>
+
+        <div class="company-row">
+          <div class="company-card">
+            <div class="company-logo">🟢</div>
+            <div>
+              <div class="company-name">OpenAI</div>
+              <div class="company-use" data-lang="app_c1_use">مدل‌های پایه و رابط‌های برنامه‌نویسی تجاری</div>
+              <div class="company-desc" data-lang="app_c1_desc">مدل‌های پیشرفته به صدها میلیون کاربر هفتگی در ChatGPT و سرویس‌های دیگر خدمت‌رسانی می‌کنند. تولید میلیون‌ها تصویر با کیفیت بالا در روز و تامین زیرساخت هوشمند برای شرکت‌های بزرگی نظیر مایکروسافت، از افتخارات این پلتفرم است.</div>
+              <span class="company-tag">GPT-4o · Sora · DALL-E 3</span>
+            </div>
+          </div>
+          <div class="company-card">
+            <div class="company-logo">🔵</div>
+            <div>
+              <div class="company-name">Google DeepMind</div>
+              <div class="company-use" data-lang="app_c2_use">هوش مصنوعی علمی و زیرساخت‌های محاسباتی</div>
+              <div class="company-desc" data-lang="app_c2_desc">مدل‌های Gemini در مقیاس بسیار وسیع با رقبا همگام هستند. مدل علمی AlphaFold برنده جایزه نوبل شیمی شد چرا که توانست ساختار سه‌بعدی میلیون‌ها پروتئین را پیش‌بینی کند و بن‌بست زیست‌شناسان را برطرف سازد.</div>
+              <span class="company-tag">Gemini · AlphaFold · AlphaCode</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ═══ ML MODULE PAGE ═══ -->
+    <div class="module-page" id="page-ml">
+      <div class="module-hero">
+        <div class="module-hero-icon" style="background:rgba(52,211,153,0.12);">📊</div>
+        <div>
+          <div class="module-eyebrow" data-lang="module_02">ماژول ۰۲</div>
+          <h1 class="module-h1" data-lang="mod_ml_title">یادگیری ماشین</h1>
+          <p class="module-lead" data-lang="ml_hero_lead">دانش توسعه الگوریتم‌هایی که عملکرد خود را در انجام یک وظیفه مشخص با مواجهه با داده‌های جدید بهبود می‌بخشند، بدون اینکه به طور مستقیم برای هر مورد خاص برنامه‌نویسی شده باشند. یادگیری ماشین موتور محرک هوش مصنوعی مدرن است.</p>
+          <div class="module-meta">
+            <div class="meta-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              <span data-lang="ml_meta_date">تاسیس ۱۹۵۹، آرتور ساموئل</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-bar" id="tabs-ml">
+        <button class="tab-btn active" onclick="switchTab('ml','definition')" data-lang="tab_definition">تعریف</button>
+        <button class="tab-btn" onclick="switchTab('ml','methods')" data-lang="tab_methods">روش‌ها</button>
+        <button class="tab-btn" onclick="switchTab('ml','usage')" data-lang="tab_usage">استفاده واقعی</button>
+      </div>
+
+      <!-- ML: Definition -->
+      <div class="tab-content active" id="tab-ml-definition">
+        <div class="callout">
+          <svg class="callout-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+          <div class="callout-text" data-lang="ml_callout_1">
+            <strong>ایده بنیادین:</strong> در برنامه‌نویسی سنتی، برنامه‌نویس قوانین را می‌نویسد: <em>اگر ایمیل شامل کلمه فورس بود -> هرزنامه است</em>. اما در یادگیری ماشین، سیستم قوانین را خودش از روی میلیون‌ها نمونه هرزنامه و پیام عادی کشف و استخراج می‌کند.
+          </div>
+        </div>
+
+        <div class="content-grid-2">
+          <div class="card">
+            <div class="card-accent-line" style="background:linear-gradient(90deg,#34d399,transparent)"></div>
+            <div class="card-label" data-lang="ml_c1_lbl">داده‌ها (Data)</div>
+            <div class="card-title" data-lang="ml_c1_title">ماده خام یادگیری</div>
+            <div class="card-body" data-lang="ml_c1_body">کیفیت، حجم و گوناگونی داده‌های آموزشی سقف توانایی مدل را تعیین می‌کنند. آماده‌سازی، برچسب‌گذاری و تمیز کردن داده‌ها معمولا تا ۸۰ درصد زمان یک مهندس یادگیری ماشین را به خود اختصاص می‌دهد.</div>
+          </div>
+          <div class="card">
+            <div class="card-accent-line" style="background:linear-gradient(90deg,#10b981,transparent)"></div>
+            <div class="card-label" data-lang="ml_c2_lbl">مدل (Model)</div>
+            <div class="card-title" data-lang="ml_c2_title">ساختار یادگیری ریاضی</div>
+            <div class="card-body" data-lang="ml_c2_body">مدل یک تابع ریاضی بزرگ با وزن‌های قابل تنظیم است. آموزش فرآیندی است که در آن این وزن‌ها به طور مداوم تغییر می‌کنند تا خروجی نهایی مدل بهترین انطباق را با داده‌های هدف واقعی داشته باشد.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ML: Methods -->
+      <div class="tab-content" id="tab-ml-methods">
+        <div class="section-title" data-lang="ml_met_title">پارادایم‌های اصلی یادگیری ماشین</div>
+        <div class="section-sub" data-lang="ml_met_subtitle">یادگیری ماشین شامل مجموعه‌ای از روش‌های متنوع است که متناسب با ساختار مسئله و دسترسی به داده‌ها انتخاب می‌شوند.</div>
+
+        <div class="method-card" onclick="toggleMethod(this)">
+          <div class="method-header">
+            <div class="method-icon-box" style="background:rgba(52,211,153,0.12)">📌</div>
+            <div class="method-title" data-lang="ml_m1_t">یادگیری نظارت‌شده (Supervised Learning)</div>
+            <svg class="method-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+          </div>
+          <div class="method-body">
+            <div class="method-body-inner">
+              <span data-lang="ml_m1_d">پرکاربردترین رویکرد تجاری. هر نمونه داده آموزشی شامل یک زوج (ورودی، برچسب صحیح) است. مدل تلاش می‌کند با به حداقل رساندن خطای پیش‌بینی، به نقشه نگاشت صحیح دست یابد.</span>
+              <br><br>
+              <strong>الگوریتم‌ها:</strong> Regression, Random Forests, XGBoost, Neural Networks.
+            </div>
+          </div>
+        </div>
+
+        <div class="method-card" onclick="toggleMethod(this)">
+          <div class="method-header">
+            <div class="method-icon-box" style="background:rgba(99,102,241,0.12)">🔍</div>
+            <div class="method-title" data-lang="ml_m2_t">یادگیری غیرنظارت‌شده (Unsupervised Learning)</div>
+            <svg class="method-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+          </div>
+          <div class="method-body">
+            <div class="method-body-inner">
+              <span data-lang="ml_m2_d">در این روش هیچ برچسبی وجود ندارد. سیستم ساختارهای پنهان را در داده‌های خام کشف می‌کند. هدف گروه‌بندی الگوهای مشابه یا فشرده‌سازی اطلاعات بدون دخالت انسان است.</span>
+              <br><br>
+              <strong>الگوریتم‌ها:</strong> K-Means, PCA, Autoencoders.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ML: Real-world Usage -->
+      <div class="tab-content" id="tab-ml-usage">
+        <div class="section-title" data-lang="ml_us_title">توسعه در زیرساخت‌های واقعی تجاری</div>
+        <div class="section-sub" data-lang="ml_us_subtitle">این سیستم‌ها قلب تپنده پلتفرم‌های ابری در ابعاد میلیارد دلاری هستند.</div>
+
+        <div class="company-row">
+          <div class="company-card">
+            <div class="company-logo">🎬</div>
+            <div>
+              <div class="company-name">Netflix</div>
+              <div class="company-use" data-lang="ml_us_c1_use">شخصی‌سازی گسترده و فشرده‌سازی بهینه ویدیو</div>
+              <div class="company-desc" data-lang="ml_us_c1_desc">سیستم توصیه‌گر نتفلیکس سالانه میلیاردها دلار در جلب رضایت مشتریان صرفه‌جویی می‌کند. مدل‌ها رفتار کاربر، زمان تماشا و اولویت‌های بصری او را به طور مداوم تحلیل می‌کنند.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ═══ DL MODULE PAGE ═══ -->
+    <div class="module-page" id="page-dl">
+      <div class="module-hero">
+        <div class="module-hero-icon" style="background:rgba(244,114,182,0.12);">🧠</div>
+        <div>
+          <div class="module-eyebrow" data-lang="module_03">ماژول ۰۳</div>
+          <h1 class="module-h1" data-lang="mod_dl_title">یادگیری عمیق</h1>
+          <p class="module-lead" data-lang="dl_hero_lead">شاخه‌ای از یادگیری ماشین که از شبکه‌های عصبی عمیق چندلایه برای یادگیری بازنمایی‌های سلسله‌مراتب داده‌ها استفاده می‌کند. یادگیری عمیق تعاریف غیرممکن در هوش مصنوعی را دگرگون کرد.</p>
+        </div>
+      </div>
+
+      <div class="tab-bar" id="tabs-dl">
+        <button class="tab-btn active" onclick="switchTab('dl','concept')" data-lang="tab_concept">مفاهیم</button>
+        <button class="tab-btn" onclick="switchTab('dl','architectures')" data-lang="tab_architectures">معماری‌ها</button>
+        <button class="tab-btn" onclick="switchTab('dl','modern')" data-lang="tab_modern">هوش مدرن</button>
+      </div>
+
+      <!-- DL: Concept -->
+      <div class="tab-content active" id="tab-dl-concept">
+        <div class="callout">
+          <svg class="callout-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+          <div class="callout-text" data-lang="dl_callout_1">
+            <strong>ایده بنیادین:</strong> شبکه‌های عمیق ویژگی‌های انتزاعی را در سطوح مختلف یاد می‌گیرند. لایه‌های اول بافت‌ها و لبه‌ها را می‌بینند، لایه‌های میانی اشکال را تشکیل می‌دهند و لایه‌های پایانی اشیا و مفاهیم پیچیده را متمایز می‌کنند.
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-block"><div class="stat-value">1.8<span class="unit">T</span></div><div class="stat-label" data-lang="dl_stat_1">تعداد پارامترهای تخمینی مدل‌های بزرگ امروزی</div></div>
+          <div class="stat-block"><div class="stat-value">10<span class="unit">K</span></div><div class="stat-label" data-lang="dl_stat_2">کارت گرافیک مورد نیاز در کلاسترهای ابری برای آموزش</div></div>
+        </div>
+      </div>
+
+      <!-- DL: Architectures -->
+      <div class="tab-content" id="tab-dl-architectures">
+        <div class="section-title" data-lang="dl_arch_title">معماری‌های برتر شبکه‌های عصبی عمیق</div>
+        <div class="section-sub" data-lang="dl_arch_subtitle">هر کدام از این معماری‌ها برای استخراج الگو از نوع خاصی از داده‌ها (تصویری، متوالی یا ساختاریافته) طراحی شده‌اند.</div>
+
+        <div class="arch-grid">
+          <div class="arch-card">
+            <span class="arch-tag" style="background:rgba(52,211,153,0.12);color:#34d399">Vision</span>
+            <div class="arch-name">CNN — Convolutional Neural Networks</div>
+            <div class="arch-desc" data-lang="dl_arch_c1">ایده‌آل برای درک تصاویر و فرآیندهای فضایی. فیلترهای کانولوشن روی تصویر می‌لغزند تا الگوها را بدون توجه به موقعیت مکانی آنها شناسایی کنند.</div>
+          </div>
+          <div class="arch-card">
+            <span class="arch-tag" style="background:rgba(251,191,36,0.12);color:#fbbf24">Foundation</span>
+            <div class="arch-name">Transformer</div>
+            <div class="arch-desc" data-lang="dl_arch_c2">معرفی شده در مقاله معروف "توجه تمام آن چیزی است که نیاز دارید". با حذف معماری‌های متوالی، مکانیسم توجه متقابل (Self-Attention) را برای پردازش موازی معرفی کرد.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DL: Modern AI -->
+      <div class="tab-content" id="tab-dl-modern">
+        <div class="section-title" data-lang="dl_mod_title">سردمداران انقلاب یادگیری عمیق</div>
+        <div class="section-sub" data-lang="dl_mod_sub">پیشرفته‌ترین محصولاتی که امروز بر این فناوری‌ها تکیه دارند.</div>
+
+        <div class="company-row">
+          <div class="company-card">
+            <div class="company-logo">💬</div>
+            <div>
+              <div class="company-name">GPT-4 — OpenAI</div>
+              <div class="company-use" data-lang="dl_mod_c1_use">برترین مدل زبانی چندوجهی برای درک مسائل پیچیده</div>
+              <div class="company-desc" data-lang="dl_mod_c1_desc">یک معماری مخلوطی از متخصصان (MoE) با صدها میلیارد پارامتر که با یادگیری از بازخورد انسانی (RLHF) تراز شده است تا به دقیق‌ترین پاسخ‌های ممکن دست یابد.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     🌐 BILINGUAL FLOATING SWITCHER
+═══════════════════════════════════════════ -->
+<div class="lang-toggle">
+  <button class="lang-btn active" id="btn-lang-fa" onclick="setLanguage('fa')">FA</button>
+  <button class="lang-btn" id="btn-lang-en" onclick="setLanguage('en')">EN</button>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     🚀 FLOATING HUB TOGGLER
+═══════════════════════════════════════════ -->
+<button class="hub-fab" onclick="openHub()">
+  <span>🚀</span>
+  <span data-lang="hub_fab_text">اکوسیستم ابزارها</span>
+</button>
+
+<!-- ═══════════════════════════════════════════
+     🛍️ AI ECOSYSTEM HUB (APP-STORE STYLE MODAL)
+═══════════════════════════════════════════ */ -->
+<div class="modal-overlay" id="hub-modal" onclick="closeHubOnOuterClick(event)">
+  <div class="modal-container">
+    <div class="modal-header">
+      <div class="modal-title-box">
+        <h2 class="modal-title" data-lang="hub_title">اکوسیستم هوش مصنوعی</h2>
+        <span class="modal-badge" data-lang="hub_badge">نسخه ۲۰۲۶</span>
+      </div>
+      <button class="modal-close" onclick="closeHub()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Search and Filter Systems -->
+      <div class="modal-controls">
+        <div class="modal-search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" id="hub-search-input" placeholder="جستجوی ابزارهای هوش مصنوعی..." oninput="filterHubTools()">
+        </div>
+        <div class="filter-tabs" id="hub-filter-tabs">
+          <button class="filter-btn active" onclick="filterCategory('all')" data-lang="cat_all">همه</button>
+          <button class="filter-btn" onclick="filterCategory('chatbots')" data-lang="cat_chatbots">دستیارها</button>
+          <button class="filter-btn" onclick="filterCategory('images')" data-lang="cat_images">تولید تصویر</button>
+          <button class="filter-btn" onclick="filterCategory('videos')" data-lang="cat_videos">تولید ویدیو</button>
+          <button class="filter-btn" onclick="filterCategory('productivity')" data-lang="cat_productivity">بهره‌وری</button>
+        </div>
+      </div>
+
+      <!-- App Store grid representation -->
+      <div class="hub-grid" id="hub-grid-container">
+        <!-- Dynically injected via javascript -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   BILINGUAL DICTIONARY (TRANSLATION SYSTEM)
+═══════════════════════════════════════════ */
+const i18n = {
+  fa: {
+    // Landing View
+    platform_beta: "پلتفرم نسخه ۲.۰ — اکنون در بتای عمومی",
+    hero_title: "درک عمیق<br><em>هوش مصنوعی</em><br>از اصول اولیه",
+    hero_subtitle: "جهان هوش مصنوعی یک محیط یادگیری ساختاریافته برای هوش مصنوعی، یادگیری ماشین و یادگیری عمیق است — ساخته شده برای مهندسان و متفکرانی که عمق می‌خواهند، نه تعاریف سطحی.",
+    enter_btn: "ورود به جهان هوش مصنوعی",
+    demo_btn: "مشاهده دمو سریع",
+    mod_ai_title: "هوش مصنوعی",
+    mod_ml_title: "یادگیری ماشین",
+    mod_dl_title: "یادگیری عمیق",
+
+    // Rail & Base navigation
+    brand_name: "جهان هوش مصنوعی",
+    tab_overview: "بررسی اجمالی",
+    tab_capabilities: "قابلیت‌ها",
+    tab_applications: "کاربردها",
+    tab_definition: "تعریف",
+    tab_methods: "روش‌ها",
+    tab_usage: "استفاده واقعی",
+    tab_concept: "مفاهیم",
+    tab_architectures: "معماری‌ها",
+    tab_modern: "هوش مدرن",
+    platform_sub: "پلتفرم آموزشی پیشرفته",
+    version_label: "نسخه پایدار ۲.۰",
+
+    // Breadcrumbs & top bar actions
+    hub_trigger_text: "اکوسیستم ابزارها",
+    hub_fab_text: "اکوسیستم ابزارها",
+
+    // AI Page details
+    module_01: "ماژول ۰۱",
+    ai_hero_lead: "علم ساخت سیستم‌هایی که هوشمندانه عمل می‌کنند — محیط را درک می‌کنند، روی اطلاعات استدلال می‌کنند و برای دستیابی به اهداف مشخص، اقداماتی انجام می‌دهند. هوش مصنوعی بیشتر یک فلسفه طراحی است تا صرفا یک فناوری.",
+    ai_meta_date: "تاسیس ۱۹۵۶، دارتموث",
+    ai_callout_1: "<strong>بینش کلیدی:</strong> هوش مصنوعی یک فناوری واحد نیست — بلکه طیفی از رویکردها است، از سیستم‌های خبره قانون‌محور تا عامل‌های عصبی خودآموز. آنچه آنها را متحد می‌کند هدف است: ماشین‌هایی که در محیط‌های نامطمئن عاقلانه عمل می‌کنند.",
+    ai_stat_1: "بازار جهانی هوش مصنوعی تا ۲۰۳۰",
+    ai_stat_2: "گذشته از پرسش آلن تورینگ",
+    ai_stat_3: "افراد استفاده کننده روزانه",
+    ai_stat_4: "سرمایه‌گذاری شرکت‌های برتر دنیا",
+    ai_sec1_title: "هوش مصنوعی واقعاً چیست؟",
+    ai_sec1_sub: "زبان بازاریابی را کنار بگذارید؛ هوش مصنوعی یک شاخه مهندسی با هدفی مشخص است: ساخت سیستم‌هایی که رفتار آنها به طور کامل از قبل قابل پیش‌بینی نیست. این همان چیزی است که هوش مصنوعی را از نرم‌افزارهای کلاسیک متمایز می‌کند.",
+    ai_card1_lbl: "هوش مصنوعی محدود (Narrow AI)",
+    ai_card1_title: "هوشمندی مختص وظیفه ویژه",
+    ai_card1_body: "سیستم‌های امروزی — مانند GPT-4، AlphaFold، Tesla Autopilot — همگی هوش مصنوعی محدود هستند. آنها یک وظیفه خاص را با دقت فوق‌انسانی انجام می‌دهند اما هیچ ظرفیتی برای تعمیم و کارهای عمومی ندارند. یک موتور شطرنج نمی‌تواند شعر بنویسد؛ یک کلاسیفایر تصاویر توانایی رانندگی ندارد. این محدودیت رمز قدرت شگفت‌انگیز آنهاست.",
+    ai_card2_lbl: "هوش عمومی (AGI)",
+    ai_card2_title: "مرز حل‌نشده علم",
+    ai_card2_body: "هوش مصنوعی عمومی (AGI) — سیستمی که بتواند مانند یک انسان در دامنه‌های مختلف استدلال کند — هنوز به صورت نظری باقی مانده است. شرکت‌هایی همچون OpenAI، Anthropic، و DeepMind به طور رسمی هدف بلندمدت خود را رسیدن به AGI قرار داده‌اند. اجماع دانشمندان: AGI امکان‌پذیر است، اما جدول زمانی آن بسیار مبهم است و بین ۵ تا ۵۰ سال تخمین زده می‌شود.",
+    ai_sec2_title: "سه پارادایم تکامل",
+    ai_sec2_sub: "هوش مصنوعی از سه دوره تحقیقاتی متمایز با مفروضات متفاوت عبور کرده است.",
+    ai_tl_t1: "هوش مصنوعی نمادین و سیستم‌های خبره",
+    ai_tl_d1: "کدنویسی دستی قوانین و درخت‌های تصمیم منطقی. پروژه دیپ‌بلو شرکت IBM دانش شطرنج را به صورت صریح فرموله‌سازی کرد. سیستم در خارج از دامنه خود شکننده بود — هر موقعیتی که مهندسان پیش‌بینی نکرده بودند منجر به شکست کامل می‌شد.",
+    ai_tl_t2: "یادگیری ماشین آماری",
+    ai_tl_d2: "تغییر از قوانین دست‌نویس به الگوهای استخراج‌شده از داده‌ها. ماشین‌های بردار پشتیبان (SVM)، جنگل‌های تصادفی و شبکه‌های عصبی اولیه پدید آمدند. سیستم‌ها توانستند فراتر از داده‌های آموزشی خود تعمیم‌پذیری داشته باشند.",
+    ai_tl_t3: "یادگیری عمیق و مدل‌های پایه",
+    ai_tl_d3: "پیروزی مدل الکس‌نت (AlexNet) در رقابت‌های پردازش تصویر سال ۲۰۱۲ مسیر هوش مصنوعی را دگرگون کرد. مقیاس عظیم — داده‌های بیشتر، محاسبات سنگین‌تر، پارامترهای نجومی — به پیشرفت مداوم منجر شد. چت‌بات‌های پیشرفته امروزی بر همین اصول استوارند.",
+
+    // Capabilities Tab details
+    cap_title: "سیستم‌های امروزی چه کارهایی می‌توانند انجام دهند؟",
+    cap_subtitle: "نه آنچه در آینده دور ممکن است رخ دهد — بلکه سیستم‌های مستقر شده در مقیاس وسیع که توسط محصولات واقعی تایید شده‌اند.",
+    cap_c1_lbl: "زبان طبیعی",
+    cap_c1_title: "درک و تولید متن روان",
+    cap_c1_body: "مدل‌های بزرگ زبان در آزمون‌های حقوقی قبول می‌شوند، کدهای برنامه‌نویسی برای فرآیندهای تجاری می‌نویسند و کتاب‌های طولانی را در کسری از ثانیه خلاصه می‌کنند. پردازش صدها هزار توکن در یک درخواست اکنون واقعی است.",
+    cap_c2_lbl: "بینایی ماشین",
+    cap_c2_title: "دیدن و تفسیر همزمان تصاویر",
+    cap_c2_body: "سیستم‌های تصویربرداری پزشکی، بیماری‌های شبکیه چشم را با دقت بالای ۹۰ درصد تشخیص می‌دهند. خودروهای خودران فیدهای ویدیویی چندگانه را با نرخ فریم بسیار بالا پردازش می‌کنند تا در ترافیک شهری ناوبری کنند.",
+    cap_c3_lbl: "استدلال",
+    cap_c3_title: "برنامه‌ریزی و حل مسائل چندمرحله‌ای",
+    cap_c3_body: "مدل‌های ریاضی جدید پیچیده‌ترین مسائل المپیاد را حل می‌کنند. مدل‌های استدلالی با استفاده از تکنیک‌های زنجیره اندیشه (Chain-of-thought) به دقت علمی در سطح آزمون‌های دکترا دست می‌بخشند.",
+    cap_callout: "<strong>محدودیت بسیار مهم:</strong> تمامی سیستم‌های هوش مصنوعی فعلی تطبیق‌دهنده‌های الگو براساس داده‌های تاریخی هستند. در صورت مواجهه با ورودی‌هایی که تفاوت بنیادینی با توزیع آموزشی آنها دارند، ممکن است دچار خطای فاحش شوند که به آن انحراف توزیع (Distributional Shift) می‌گویند.",
+
+    // Applications Tab details
+    app_title: "استقرارهای واقعی در مقیاس کلان",
+    app_subtitle: "اینها نمونه‌های آزمایشی آزمایشگاهی نیستند — بلکه سیستم‌های تجاری هستند که روزانه به میلیون‌ها کاربر خدمات می‌دهند.",
+    app_c1_use: "مدل‌های پایه و رابط‌های برنامه‌نویسی تجاری",
+    app_c1_desc: "مدل‌های پیشرفته به صدها میلیون کاربر هفتگی در ChatGPT و سرویس‌های دیگر خدمت‌رسانی می‌کنند. تولید میلیون‌ها تصویر با کیفیت بالا در روز و تامین زیرساخت هوشمند برای شرکت‌های بزرگی نظیر مایکروسافت، از افتخارات این پلتفرم است.",
+    app_c2_use: "هوش مصنوعی علمی و زیرساخت‌های محاسباتی",
+    app_c2_desc: "مدل‌های Gemini در مقیاس بسیار وسیع با رقبا همگام هستند. مدل علمی AlphaFold برنده جایزه نوبل شیمی شد چرا که توانست ساختار سه‌بعدی میلیون‌ها پروتئین را پیش‌بینی کند و بن‌بست زیست‌شناسان را برطرف سازد.",
+
+    // ML Module Details
+    module_02: "ماژول ۰۲",
+    ml_hero_lead: "دانش توسعه الگوریتم‌هایی که عملکرد خود را در انجام یک وظیفه مشخص با مواجهه با داده‌های جدید بهبود می‌بخشند، بدون اینکه به طور مستقیم برای هر مورد خاص برنامه‌نویسی شده باشند. یادگیری ماشین موتور محرک هوش مصنوعی مدرن است.",
+    ml_meta_date: "تاسیس ۱۹۵۹، آرتور ساموئل",
+    ml_callout_1: "<strong>ایده بنیادین:</strong> در برنامه‌نویسی سنتی، برنامه‌نویس قوانین را می‌نویسد: <em>اگر ایمیل شامل کلمه فورس بود -> هرزنامه است</em>. اما در یادگیری ماشین، سیستم قوانین را خودش از روی میلیون‌ها نمونه هرزنامه و پیام عادی کشف و استخراج می‌کند.",
+    ml_c1_lbl: "داده‌ها (Data)",
+    ml_c1_title: "ماده خام یادگیری",
+    ml_c1_body: "کیفیت، حجم و گوناگونی داده‌های آموزشی سقف توانایی مدل را تعیین می‌کنند. آماده‌سازی، برچسب‌گذاری و تمیز کردن داده‌ها معمولا تا ۸۰ درصد زمان یک مهندس یادگیری ماشین را به خود اختصاص می‌دهد.",
+    ml_c2_lbl: "مدل (Model)",
+    ml_c2_title: "ساختار یادگیری ریاضی",
+    ml_c2_body: "مدل یک تابع ریاضی بزرگ با وزن‌های قابل تنظیم است. آموزش فرآیندی است که در آن این وزن‌ها به طور مداوم تغییر می‌کنند تا خروجی نهایی مدل بهترین انطباق را با داده‌های هدف واقعی داشته باشد.",
+    ml_met_title: "پارادایم‌های اصلی یادگیری ماشین",
+    ml_met_subtitle: "یادگیری ماشین شامل مجموعه‌ای از روش‌های متنوع است که متناسب با ساختار مسئله و دسترسی به داده‌ها انتخاب می‌شوند.",
+    ml_m1_t: "یادگیری نظارت‌شده (Supervised Learning)",
+    ml_m1_d: "پرکاربردترین رویکرد تجاری. هر نمونه داده آموزشی شامل یک زوج (ورودی، برچسب صحیح) است. مدل تلاش می‌کند با به حداقل رساندن خطای پیش‌بینی، به نقشه نگاشت صحیح دست یابد.",
+    ml_m2_t: "یادگیری غیرنظارت‌شده (Unsupervised Learning)",
+    ml_m2_d: "در این روش هیچ برچسبی وجود ندارد. سیستم ساختارهای پنهان را در داده‌های خام کشف می‌کند. هدف گروه‌بندی الگوهای مشابه یا فشرده‌سازی اطلاعات بدون دخالت انسان است.",
+    ml_us_title: "توسعه در زیرساخت‌های واقعی تجاری",
+    ml_us_subtitle: "این سیستم‌ها قلب تپنده پلتفرم‌های ابری در ابعاد میلیارد دلاری هستند.",
+    ml_us_c1_use: "شخصی‌سازی گسترده و فشرده‌سازی بهینه ویدیو",
+    ml_us_c1_desc: "سیستم توصیه‌گر نتفلیکس سالانه میلیاردها دلار در جلب رضایت مشتریان صرفه‌جویی می‌کند. مدل‌ها رفتار کاربر، زمان تماشا و اولویت‌های بصری او را به طور مداوم تحلیل می‌کنند.",
+
+    // DL Module Details
+    module_03: "ماژول ۰۳",
+    dl_hero_lead: "شاخه‌ای از یادگیری ماشین که از شبکه‌های عصبی عمیق چندلایه برای یادگیری بازنمایی‌های سلسله‌مراتب داده‌ها استفاده می‌کند. یادگیری عمیق تعاریف غیرممکن در هوش مصنوعی را دگرگون کرد.",
+    dl_callout_1: "<strong>ایده بنیادین:</strong> شبکه‌های عمیق ویژگی‌های انتزاعی را در سطوح مختلف یاد می‌گیرند. لایه‌های اول بافت‌ها و لبه‌ها را می‌بینند، لایه‌های میانی اشکال را تشکیل می‌دهند و لایه‌های پایانی اشیا و مفاهیم پیچیده را متمایز می‌کنند.",
+    dl_stat_1: "تعداد پارامترهای تخمینی مدل‌های بزرگ امروزی",
+    dl_stat_2: "کارت گرافیک مورد نیاز در کلاسترهای ابری برای آموزش",
+    dl_arch_title: "معماری‌های برتر شبکه‌های عصبی عمیق",
+    dl_arch_subtitle: "هر کدام از این معماری‌ها برای استخراج الگو از نوع خاصی از داده‌ها (تصویری، متوالی یا ساختاریافته) طراحی شده‌اند.",
+    dl_arch_c1: "ایده‌آل برای درک تصاویر و فرآیندهای فضایی. فیلترهای کانولوشن روی تصویر می‌لغزند تا الگوها را بدون توجه به موقعیت مکانی آنها شناسایی کنند.",
+    dl_arch_c2: "معرفی شده در مقاله معروف 'توجه تمام آن چیزی است که نیاز دارید'. با حذف معماری‌های متوالی، مکانیسم توجه متقابل (Self-Attention) را برای پردازش موازی معرفی کرد.",
+    dl_mod_title: "سردمداران انقلاب یادگیری عمیق",
+    dl_mod_sub: "پیشرفته‌ترین محصولاتی که امروز بر این فناوری‌ها تکیه دارند.",
+    dl_mod_c1_use: "برترین مدل زبانی چندوجهی برای درک مسائل پیچیده",
+    dl_mod_c1_desc: "یک معماری مخلوطی از متخصصان (MoE) با صدها میلیارد پارامتر که با یادگیری از بازخورد انسانی (RLHF) تراز شده است تا به دقیق‌ترین پاسخ‌های ممکن دست یابد.",
+
+    // AI Hub details
+    hub_title: "اکوسیستم هوش مصنوعی",
+    hub_badge: "نسخه ۲۰۲۶",
+    cat_all: "همه ابزارها",
+    cat_chatbots: "دستیارها و چت‌بات‌ها",
+    cat_images: "تولید تصویر و هنر",
+    cat_videos: "تولید و ویرایش ویدیو",
+    cat_productivity: "بهره‌وری و کدنویسی",
+    search_placeholder: "جستجوی ابزارهای هوش مصنوعی...",
+    get_tool: "ورود به ابزار"
+  },
+  en: {
+    // Landing View
+    platform_beta: "Platform v2.0 — Now in public beta",
+    hero_title: "Understand<br><em>intelligence</em><br>from first principles",
+    hero_subtitle: "AI Universe is a structured learning environment for AI, Machine Learning, and Deep Learning — built for engineers and thinkers who want depth, not definitions.",
+    enter_btn: "Enter AI Universe",
+    demo_btn: "Quick Demo",
+    mod_ai_title: "Artificial Intelligence",
+    mod_ml_title: "Machine Learning",
+    mod_dl_title: "Deep Learning",
+
+    // Rail & Base navigation
+    brand_name: "AI Universe",
+    tab_overview: "Overview",
+    tab_capabilities: "Capabilities",
+    tab_applications: "Applications",
+    tab_definition: "Definition",
+    tab_methods: "Methods",
+    tab_usage: "Real-world Usage",
+    tab_concept: "Concept",
+    tab_architectures: "Architectures",
+    tab_modern: "Modern AI",
+    platform_sub: "Advanced learning platform",
+    version_label: "v2.0 Stable",
+
+    // Breadcrumbs & top bar actions
+    hub_trigger_text: "Ecosystem Hub",
+    hub_fab_text: "AI Ecosystem Hub",
+
+    // AI Page details
+    module_01: "Module 01",
+    ai_hero_lead: "The science of building systems that behave intelligently — perceiving the environment, reasoning over information, and taking actions to achieve defined objectives. AI is less a technology than a design philosophy.",
+    ai_meta_date: "Est. 1956, Dartmouth",
+    ai_callout_1: "<strong>Core insight:</strong> AI is not one technology — it is a spectrum of approaches, from rule-based expert systems to self-learning neural agents. What unifies them is the goal: machines that act rationally in uncertain environments.",
+    ai_stat_1: "Global AI market by 2030",
+    ai_stat_2: "Since Turing's question",
+    ai_stat_3: "Active Daily Users Worldwide",
+    ai_stat_4: "Fortune 500 Investing",
+    ai_sec1_title: "What AI actually is",
+    ai_sec1_sub: "Strip away the marketing language and AI is an engineering discipline with a clear goal: build systems whose behavior cannot be fully anticipated in advance. This is what separates AI from classical software.",
+    ai_card1_lbl: "Narrow AI",
+    ai_card1_title: "Task-specific intelligence",
+    ai_card1_body: "Today's AI systems — GPT-4, AlphaFold, Tesla Autopilot — are all narrow AI. They perform one class of tasks with superhuman accuracy but have zero capacity for generalization. Chess engines cannot write poems; image classifiers cannot drive cars. This specificity is both their limitation and their power.",
+    ai_card2_lbl: "General AI",
+    ai_card2_title: "The unsolved frontier",
+    ai_card2_body: "Artificial General Intelligence (AGI) — a system that reasons across domains as flexibly as a human — remains theoretical. OpenAI, Anthropic, and DeepMind have publicly stated AGI as their long-term research direction. The consensus: AGI is possible, the timeline is genuinely uncertain, ranging from 5 to 50+ years.",
+    ai_sec2_title: "The three paradigms",
+    ai_sec2_sub: "AI has evolved through distinct research eras, each with different assumptions about intelligence.",
+    ai_tl_t1: "Symbolic AI & Expert Systems",
+    ai_tl_d1: "Hand-coded rules and logic trees. IBM's Deep Blue encoded chess knowledge explicitly. Brittle outside its domain — any situation the engineers hadn't anticipated caused failure.",
+    ai_tl_t2: "Statistical Machine Learning",
+    ai_tl_d2: "Shift from rules to patterns learned from data. Support vector machines, random forests, and early neural networks. Systems that generalized beyond their training — within a narrow distribution.",
+    ai_tl_t3: "Deep Learning & Foundation Models",
+    ai_tl_d3: "AlexNet's ImageNet victory in 2012 reset the field. Scale — more data, more compute, more parameters — kept improving performance. GPT-4, Gemini, and Claude are the current apex: trillion-parameter models trained on the breadth of human text.",
+
+    // Capabilities Tab details
+    cap_title: "What AI systems can do today",
+    cap_subtitle: "Not what AI might do eventually — what deployed systems at scale accomplish right now, verified by real products.",
+    cap_c1_lbl: "Language",
+    cap_c1_title: "Understand & generate text",
+    cap_c1_body: "GPT-4 passes bar exams, writes production code, and summarizes 200-page documents. Claude handles 200K token contexts — roughly four novels — in a single inference call.",
+    cap_c2_lbl: "Vision",
+    cap_c2_title: "See and interpret images",
+    cap_c2_body: "Google's Pathways detects diabetic retinopathy from retinal scans with 90%+ accuracy. Tesla FSD processes 8 camera feeds at 36 frames per second to navigate urban traffic.",
+    cap_c3_lbl: "Reasoning",
+    cap_c3_title: "Plan and solve problems",
+    cap_c3_body: "DeepMind's AlphaProof solved four of six International Math Olympiad problems in 2024. OpenAI o1 uses chain-of-thought reasoning to achieve PhD-level accuracy on physics benchmarks.",
+    cap_callout: "<strong>Limitation to know:</strong> All current AI systems are pattern-matchers trained on historical data. They can fail catastrophically on inputs that differ from their training distribution — a property called distributional shift.",
+
+    // Applications Tab details
+    app_title: "Real-world deployments at scale",
+    app_subtitle: "These are not research demos — they are production systems serving millions of users, embedded into critical infrastructure.",
+    app_c1_use: "Foundation Models & API",
+    app_c1_desc: "GPT-4o serves over 100M weekly active users across ChatGPT and the API. DALL-E 3 generates 2M+ images per day. OpenAI's API underlies thousands of production applications — from GitHub Copilot (30M users) to Harvey AI in legal.",
+    app_c2_use: "Scientific AI & Production",
+    app_c2_desc: "Gemini Ultra matches GPT-4 on most benchmarks while running at Google scale. AlphaFold 2 earned the Nobel Prize in Chemistry (2024) for solving protein folding. DeepMind's AlphaCode 2 beats 85% of competitive programmers.",
+
+    // ML Module Details
+    module_02: "Module 02",
+    ml_hero_lead: "The discipline of building algorithms that improve their performance on a task through exposure to data — without being explicitly programmed for each case. ML is the mechanism behind modern AI.",
+    ml_meta_date: "Term coined 1959, Arthur Samuel",
+    ml_callout_1: "<strong>The core idea:</strong> In classical programming, a developer encodes rules: <em>if email contains 'URGENT!!!' → spam</em>. In ML, the system infers the rule from labeled examples. You show it 1M spam emails and 1M real ones — it discovers the patterns itself.",
+    ml_c1_lbl: "Data",
+    ml_c1_title: "The raw material of ML",
+    ml_c1_body: "ML systems learn from examples. The quality, quantity, and diversity of training data determine the ceiling of what a model can learn. GPT-4 was trained on ~13 trillion tokens — roughly 10,000 years of continuous reading. Data curation and cleaning typically take 80% of an ML engineer's time.",
+    ml_c2_lbl: "Model",
+    ml_c2_title: "The learning structure",
+    ml_c2_body: "A model is a mathematical function with adjustable parameters (weights). Before training, these are random noise. Training is the process of adjusting weights iteratively until the model's outputs match the target data as closely as possible — measured by a loss function.",
+    ml_met_title: "Learning paradigms",
+    ml_met_subtitle: "ML is not one algorithm — it is a family of approaches, each suited to different data availability and problem structures.",
+    ml_m1_t: "Supervised Learning",
+    ml_m1_d: "The most widely deployed paradigm. Each training example is a (input, correct_output) pair. The model learns a mapping by minimizing the difference between its predictions and the correct labels.",
+    ml_m2_t: "Unsupervised Learning",
+    ml_m2_d: "No labels — the system discovers structure in raw data. The goal is to find patterns, groupings, or compressed representations without being told what to look for. This is how AI can segment customers into behavioral clusters.",
+    ml_us_title: "Where ML runs in production",
+    ml_us_subtitle: "These are infrastructure-grade ML systems — not proof-of-concepts, but systems with uptime requirements, latency SLAs, and billions of predictions per day.",
+    ml_us_c1_use: "Personalization & Encoding",
+    ml_us_c1_desc: "Netflix's recommendation system generates $1B/year in saved cancellations. The model considers 300+ signals per user. Beyond recommendations, ML optimizes video encoding — different bitrate profiles per scene type — saving 20% in bandwidth costs globally.",
+
+    // DL Module Details
+    module_03: "Module 03",
+    dl_hero_lead: "A class of machine learning that uses multi-layer neural networks to learn hierarchical representations of data. Deep learning redefined what was possible in AI and is the engine behind every major breakthrough since 2012.",
+    dl_callout_1: "<strong>The key insight:</strong> A deep network learns features at multiple levels of abstraction. Layer 1 sees edges and textures. Layer 5 sees shapes. Layer 20 sees objects. This hierarchy of representations emerges automatically from data — it is not designed by humans.",
+    dl_stat_1: "Estimated Parameters in frontier models",
+    dl_stat_2: "Advanced GPUs required in supercomputing clusters",
+    dl_arch_title: "Major neural architectures",
+    dl_arch_subtitle: "Each architecture was designed to exploit a different structure in data — spatial, sequential, relational. Most modern systems combine several.",
+    dl_arch_c1: "Exploits spatial locality in images. Convolutional filters slide across the input, detecting local features (edges, textures, parts) regardless of position. Stacked convolutions build increasingly abstract representations.",
+    dl_arch_c2: "Introduced in 'Attention Is All You Need' (Vaswani et al., 2017). Replaced recurrence with self-attention — every token attends to every other token simultaneously. Parallelizable, scalable, and architecture-agnostic.",
+    dl_mod_title: "Deep learning powering modern AI",
+    dl_mod_sub: "Every breakthrough AI product of the past five years is a deep learning system at its core — differentiated by data scale, compute investment, and fine-tuning methodology.",
+    dl_mod_c1_use: "Large Language Model",
+    dl_mod_c1_desc: "A transformer-based LLM with an estimated 1.8T parameters in a mixture-of-experts architecture. Trained on ~13T tokens, fine-tuned with RLHF and Constitutional AI techniques. Achieves 90th percentile on the Bar exam.",
+
+    // AI Hub details
+    hub_title: "AI Ecosystem Hub",
+    hub_badge: "v2026",
+    cat_all: "All Tools",
+    cat_chatbots: "Chatbots & Assistants",
+    cat_images: "Image Gen & Art",
+    cat_videos: "Video AI & Tools",
+    cat_productivity: "Productivity & Code",
+    search_placeholder: "Search AI tools...",
+    get_tool: "Get Tool"
+  }
+};
+
+/* ═══════════════════════════════════════════
+   AI ECOSYSTEM DIRECTORY DATA
+═══════════════════════════════════════════ */
+const aiTools = [
+  { id: 'chatgpt', name: 'ChatGPT', url: 'https://chat.openai.com', cat: 'chatbots', icon: '🟢', featured: true, desc_en: 'The industry-defining conversational agent by OpenAI.', desc_fa: 'دستیار گفتگوی هوشمند و پیشرو در صنعت ساخته شده توسط OpenAI.' },
+  { id: 'claude', name: 'Claude', url: 'https://claude.ai', cat: 'chatbots', icon: '🪵', featured: true, desc_en: 'Advanced reasoning model by Anthropic with huge context window.', desc_fa: 'مدل استدلالی پیشرفته Anthropic با پنجره متنی فوق‌العاده بزرگ.' },
+  { id: 'gemini', name: 'Gemini', url: 'https://gemini.google.com', cat: 'chatbots', icon: '🔵', featured: true, desc_en: 'Google’s native multimodal engine integrated across search.', desc_fa: 'موتور بومی چندوجهی گوگل با یکپارچگی پیشرفته در اکوسیستم.' },
+  { id: 'perplexity', name: 'Perplexity', url: 'https://www.perplexity.ai', cat: 'chatbots', icon: '🔍', featured: false, desc_en: 'Conversational search engine answering queries with citations.', desc_fa: 'موتور جستجوی گفتگویی فوق‌العاده پاسخ‌دهنده همراه با ذکر منابع علمی.' },
+  { id: 'copilot', name: 'Copilot', url: 'https://copilot.microsoft.com', cat: 'chatbots', icon: '💻', featured: false, desc_en: 'Microsoft’s customized productivity and system assistant.', desc_fa: 'دستیار بهره‌وری مایکروسافت ادغام شده در ویندوز و آفیس.' },
+  { id: 'midjourney', name: 'Midjourney', url: 'https://www.midjourney.com', cat: 'images', icon: '⛵', featured: true, desc_en: 'Unmatched artistic details from text prompts via Discord.', desc_fa: 'تولید تصاویر هنری بی‌نظیر از توصیف متنی بر بستر دیسکورد.' },
+  { id: 'stable-diff', name: 'Stable Diffusion', url: 'https://stability.ai', cat: 'images', icon: '🎨', featured: false, desc_en: 'Open-source state of the art latent diffusion models.', desc_fa: 'مدل تصویرساز متن‌باز پیشرفته با انعطاف بالا در فوتورئالیسم.' },
+  { id: 'runway', name: 'Runway ML', url: 'https://runwayml.com', cat: 'videos', icon: '🎬', featured: true, desc_en: 'Gen-2 video generation and advanced generative video suite.', desc_fa: 'تولید ویدیوهای سینمایی واقع‌گرایانه از متن و ادیت حرفه‌ای هوشمند.' },
+  { id: 'sora', name: 'Sora', url: 'https://openai.com/sora', cat: 'videos', icon: '🎥', featured: false, desc_en: 'OpenAI’s highly coherent physics-aware text-to-video AI.', desc_fa: 'هوش مصنوعی تولید ویدیوی فوق‌العاده با انسجام فیزیکی بالا.' },
+  { id: 'cursor', name: 'Cursor', url: 'https://www.cursor.com', cat: 'productivity', icon: '⌨️', featured: true, desc_en: 'AI-first code editor designed for pair-programming with LLMs.', desc_fa: 'ادیتور کد پیشرفته هوش مصنوعی برای برنامه‌نویسی گروهی با مدل‌ها.' },
+  { id: 'v0', name: 'v0 by Vercel', url: 'https://v0.dev', cat: 'productivity', icon: '🔺', featured: false, desc_en: 'Generative UI system converting prompts into frontend code.', desc_fa: 'سیستم هوشمند تولید کامپوننت‌های فرانت‌اند از روی توصیف متنی.' }
+];
+
+/* ═══════════════════════════════════════════
+   HERO CONSTELLATION CANVAS SCENE
+═══════════════════════════════════════════ */
+(function() {
+  const canvas = document.getElementById('hero-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, nodes = [], raf;
+  const N = 45;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  for (let i = 0; i < N; i++) {
+    nodes.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: (Math.random() - 0.5) * 0.25,
+      r: Math.random() * 1.5 + 0.5,
+      phase: Math.random() * Math.PI * 2
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    nodes.forEach(n => {
+      n.x += n.vx; n.y += n.vy; n.phase += 0.01;
+      if (n.x < 0 || n.x > W) n.vx *= -1;
+      if (n.y < 0 || n.y > H) n.vy *= -1;
+    });
+
+    for (let i = 0; i < N; i++) {
+      for (let j = i + 1; j < N; j++) {
+        const dx = nodes[i].x - nodes[j].x;
+        const dy = nodes[i].y - nodes[j].y;
+        const d = Math.sqrt(dx*dx + dy*dy);
+        if (d < 180) {
+          const alpha = (1 - d / 180) * 0.2;
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(99,102,241,${alpha})`;
+          ctx.lineWidth = 0.7;
+          ctx.moveTo(nodes[i].x, nodes[i].y);
+          ctx.lineTo(nodes[j].x, nodes[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    nodes.forEach(n => {
+      const glow = Math.sin(n.phase) * 0.3 + 0.7;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r * glow, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(129,140,248,${0.3 + glow * 0.3})`;
+      ctx.fill();
+    });
+
+    raf = requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ═══════════════════════════════════════════
+   BILINGUAL & SYSTEM NAVIGATION STATE
+═══════════════════════════════════════════ */
+let lang = 'fa'; // Default Language
+let currentModule = 'ai';
+let currentTabs = { ai: 'overview', ml: 'definition', dl: 'concept' };
+
+const tabNames = {
+  ai: { overview: 'tab_overview', capabilities: 'tab_capabilities', applications: 'tab_applications' },
+  ml: { definition: 'tab_definition', methods: 'tab_methods', usage: 'tab_usage' },
+  dl: { concept: 'tab_concept', architectures: 'tab_architectures', modern: 'tab_modern' }
+};
+
+const moduleNames = { ai: 'mod_ai_title', ml: 'mod_ml_title', dl: 'mod_dl_title' };
+
+// Restore system state from storage
+window.addEventListener('DOMContentLoaded', () => {
+  const savedLang = localStorage.getItem('ai_universe_lang');
+  if (savedLang) {
+    lang = savedLang;
+  }
+  setLanguage(lang);
+  renderHubTools();
+});
+
+function setLanguage(selectedLang) {
+  lang = selectedLang;
+  localStorage.setItem('ai_universe_lang', selectedLang);
+
+  // Update layout direction & attributes
+  const htmlEl = document.documentElement;
+  if (lang === 'fa') {
+    htmlEl.setAttribute('dir', 'rtl');
+    htmlEl.setAttribute('lang', 'fa');
+  } else {
+    htmlEl.setAttribute('dir', 'ltr');
+    htmlEl.setAttribute('lang', 'en');
+  }
+
+  // Language button highlights
+  document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+  document.getElementById(`btn-lang-${lang}`).classList.add('active');
+
+  // Trigger smooth fade translation transition
+  document.body.style.opacity = '0.3';
+  setTimeout(() => {
+    // Dynamic text replacements for elements with [data-lang]
+    document.querySelectorAll('[data-lang]').forEach(el => {
+      const key = el.getAttribute('data-lang');
+      if (i18n[lang][key]) {
+        el.innerHTML = i18n[lang][key];
+      }
+    });
+
+    // Special treatment for input placeholders
+    const searchInput = document.getElementById('hub-search-input');
+    if (searchInput) {
+      searchInput.placeholder = i18n[lang]['search_placeholder'];
+    }
+
+    updateBreadcrumb(currentModule, currentTabs[currentModule]);
+    renderHubTools();
+    document.body.style.opacity = '1';
+  }, 150);
+}
+
+function enterApp(mod) {
+  document.getElementById('view-home').classList.remove('active');
+  document.getElementById('view-app').classList.add('active');
+  switchModule(mod || 'ai');
+}
+
+function goHome() {
+  document.getElementById('view-app').classList.remove('active');
+  document.getElementById('view-home').classList.add('active');
+}
+
+function switchModule(mod) {
+  currentModule = mod;
+
+  // Update Left rail list
+  document.querySelectorAll('.mod-btn').forEach(b => b.classList.remove('active'));
+  const targetBtn = document.getElementById('mod-btn-' + mod);
+  if (targetBtn) targetBtn.classList.add('active');
+
+  // Show only appropriate nested sub nav
+  ['ai','ml','dl'].forEach(m => {
+    const sub = document.getElementById('sub-' + m);
+    if (sub) sub.style.display = (m === mod) ? 'flex' : 'none';
+  });
+
+  // Toggle visible system sections
+  document.querySelectorAll('.module-page').forEach(p => p.classList.remove('active'));
+  const targetPage = document.getElementById('page-' + mod);
+  if (targetPage) targetPage.classList.add('active');
+
+  switchTab(mod, currentTabs[mod]);
+}
+
+function switchTab(mod, tab) {
+  currentTabs[mod] = tab;
+
+  // Tab bar buttons matching the tab
+  const tabBar = document.getElementById('tabs-' + mod);
+  if (tabBar) {
+    const tabKeys = Object.keys(tabNames[mod]);
+    tabBar.querySelectorAll('.tab-btn').forEach((btn, index) => {
+      btn.classList.toggle('active', tabKeys[index] === tab);
+    });
+  }
+
+  // Display only target tab content page
+  document.querySelectorAll(`#page-${mod} .tab-content`).forEach(tc => tc.classList.remove('active'));
+  const targetTabContent = document.getElementById('tab-' + mod + '-' + tab);
+  if (targetTabContent) targetTabContent.classList.add('active');
+
+  updateBreadcrumb(mod, tab);
+  syncSubNav(mod, tab);
+}
+
+function syncSubNav(mod, tab) {
+  const sub = document.getElementById('sub-' + mod);
+  if (!sub) return;
+  const tabKeys = Object.keys(tabNames[mod]);
+  sub.querySelectorAll('.sub-btn').forEach((btn, index) => {
+    btn.classList.toggle('active', tabKeys[index] === tab);
+  });
+}
+
+function updateBreadcrumb(mod, tab) {
+  const modKey = moduleNames[mod];
+  const tabKey = tabNames[mod][tab];
+  
+  const bcModule = document.getElementById('bc-module');
+  const bcTab = document.getElementById('bc-tab');
+
+  if (bcModule && i18n[lang][modKey]) bcModule.textContent = i18n[lang][modKey];
+  if (bcTab && i18n[lang][tabKey]) bcTab.textContent = i18n[lang][tabKey];
+}
+
+/* ═══════════════════════════════════════════
+   INTERACTIVE PARADIGMS ACCORDION
+═══════════════════════════════════════════ */
+function toggleMethod(card) {
+  const isOpen = card.classList.contains('open');
+  document.querySelectorAll('.method-card').forEach(c => c.classList.remove('open'));
+  if (!isOpen) {
+    card.classList.add('open');
+  }
+}
+
+/* ═══════════════════════════════════════════
+   🛒 AI ECOSYSTEM HUB (INTERACTION LOGIC)
+═══════════════════════════════════════════ */
+let activeCategory = 'all';
+
+function openHub() {
+  document.getElementById('hub-modal').classList.add('open');
+}
+
+function closeHub() {
+  document.getElementById('hub-modal').classList.remove('open');
+}
+
+function closeHubOnOuterClick(e) {
+  if (e.target === document.getElementById('hub-modal')) {
+    closeHub();
+  }
+}
+
+function filterCategory(cat) {
+  activeCategory = cat;
+  
+  // Highlight tab
+  const tabsContainer = document.getElementById('hub-filter-tabs');
+  tabsContainer.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  
+  e = window.event;
+  if (e && e.currentTarget) {
+    e.currentTarget.classList.add('active');
+  }
+
+  filterHubTools();
+}
+
+function filterHubTools() {
+  const query = document.getElementById('hub-search-input').value.toLowerCase().trim();
+  renderHubTools(query, activeCategory);
+}
+
+function renderHubTools(searchQuery = '', category = 'all') {
+  const container = document.getElementById('hub-grid-container');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  const filtered = aiTools.filter(tool => {
+    const matchesCat = (category === 'all' || tool.cat === category);
+    const matchesSearch = tool.name.toLowerCase().includes(searchQuery) ||
+                          tool.desc_en.toLowerCase().includes(searchQuery) ||
+                          tool.desc_fa.includes(searchQuery);
+    return matchesCat && matchesSearch;
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-3); padding: 40px;">No tools match your criteria / ابزاری یافت نشد</div>`;
+    return;
+  }
+
+  filtered.forEach(tool => {
+    const card = document.createElement('div');
+    card.className = `hub-card ${tool.featured ? 'featured' : ''}`;
+    
+    const desc = lang === 'fa' ? tool.desc_fa : tool.desc_en;
+    const btnText = i18n[lang]['get_tool'];
+
+    card.innerHTML = `
+      <div class="hub-card-header">
+        <div class="hub-card-icon">${tool.icon}</div>
+        <div>
+          <h4 class="hub-card-title">${tool.name}</h4>
+          <span class="hub-card-category">${tool.cat}</span>
+        </div>
+      </div>
+      <p class="hub-card-desc">${desc}</p>
+      <div class="hub-card-footer">
+        <a href="${tool.url}" target="_blank" class="hub-install-btn">
+          <span>${btnText}</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/>
+          </svg>
+        </a>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+</script>
+</body>
+</html>
