@@ -58,6 +58,8 @@ body {
   color: var(--text-1);
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   overflow-x: hidden;
   transition: opacity var(--transition);
 }
@@ -87,6 +89,21 @@ svg { display: block; flex-shrink: 0; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* Smooth momentum scrolling on touch devices (iOS Safari) */
+.content-area, .rail-scroll-area, .modal-container, .filter-tabs, .tab-bar {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 
 /* ═══════════════════════════════════════════
    VIEWS MANAGEMENT
@@ -398,6 +415,8 @@ html[dir="rtl"] .btn-primary:hover svg { transform: translateX(-4px); }
   overflow-y: auto; overflow-x: hidden;
   background: var(--void);
   position: relative;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Background Glowing Elements inside dashboard */
@@ -517,6 +536,7 @@ html[dir="rtl"] .btn-primary:hover svg { transform: translateX(-4px); }
   background: var(--surface-1);
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  will-change: transform;
   padding: 24px; transition: all var(--transition);
   position: relative; overflow: hidden;
   box-shadow: 0 4px 20px rgba(0,0,0,0.15);
@@ -879,6 +899,7 @@ html[dir="rtl"] .btn-primary:hover svg { transform: translateX(-4px); }
   background: var(--surface-1);
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  will-change: transform;
   padding: 18px;
   display: flex;
   flex-direction: column;
@@ -2003,6 +2024,7 @@ function switchModule(mod) {
   if (targetPage) targetPage.classList.add('active');
 
   switchTab(mod, currentTabs[mod]);
+  scrollContentToTop();
 }
 
 function switchTab(mod, tab) {
@@ -2024,6 +2046,12 @@ function switchTab(mod, tab) {
 
   updateBreadcrumb(mod, tab);
   syncSubNav(mod, tab);
+  scrollContentToTop();
+}
+
+function scrollContentToTop() {
+  const content = document.querySelector('.content-area');
+  if (content) content.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function syncSubNav(mod, tab) {
