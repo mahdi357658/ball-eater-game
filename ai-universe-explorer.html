@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Universe — Explore Intelligence</title>
+<meta name="description" content="A structured, bilingual (Persian/English) learning platform covering Artificial Intelligence, Machine Learning, and Deep Learning — built for engineers and thinkers who want depth, not surface-level definitions.">
+<meta name="theme-color" content="#07070a">
+<meta property="og:title" content="AI Universe — Explore Intelligence">
+<meta property="og:description" content="A structured, bilingual learning platform for AI, Machine Learning, and Deep Learning.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2.5'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- Premium fonts: Inter for English, Vazirmatn for Persian -->
@@ -1058,7 +1064,7 @@ html[dir="rtl"] .hub-card.featured::after {
         </div>
         <span data-lang="brand_name">جهان هوش مصنوعی</span>
       </div>
-      <button class="rail-back" onclick="goHome()" title="Home">
+      <button class="rail-back" onclick="goHome()" title="Home" aria-label="Back to home">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <!-- Dynamically rotated based on layout dir -->
           <path d="M19 12H5M12 19l-7-7 7-7"/>
@@ -1509,7 +1515,7 @@ html[dir="rtl"] .hub-card.featured::after {
         <h2 class="modal-title" data-lang="hub_title">اکوسیستم هوش مصنوعی</h2>
         <span class="modal-badge" data-lang="hub_badge">نسخه ۲۰۲۶</span>
       </div>
-      <button class="modal-close" onclick="closeHub()">
+      <button class="modal-close" onclick="closeHub()" aria-label="Close">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
         </svg>
@@ -1526,11 +1532,11 @@ html[dir="rtl"] .hub-card.featured::after {
           <input type="text" id="hub-search-input" placeholder="جستجوی ابزارهای هوش مصنوعی..." oninput="filterHubTools()">
         </div>
         <div class="filter-tabs" id="hub-filter-tabs">
-          <button class="filter-btn active" onclick="filterCategory('all')" data-lang="cat_all">همه</button>
-          <button class="filter-btn" onclick="filterCategory('chatbots')" data-lang="cat_chatbots">دستیارها</button>
-          <button class="filter-btn" onclick="filterCategory('images')" data-lang="cat_images">تولید تصویر</button>
-          <button class="filter-btn" onclick="filterCategory('videos')" data-lang="cat_videos">تولید ویدیو</button>
-          <button class="filter-btn" onclick="filterCategory('productivity')" data-lang="cat_productivity">بهره‌وری</button>
+          <button class="filter-btn active" onclick="filterCategory('all', event)" data-lang="cat_all">همه</button>
+          <button class="filter-btn" onclick="filterCategory('chatbots', event)" data-lang="cat_chatbots">دستیارها</button>
+          <button class="filter-btn" onclick="filterCategory('images', event)" data-lang="cat_images">تولید تصویر</button>
+          <button class="filter-btn" onclick="filterCategory('videos', event)" data-lang="cat_videos">تولید ویدیو</button>
+          <button class="filter-btn" onclick="filterCategory('productivity', event)" data-lang="cat_productivity">بهره‌وری</button>
         </div>
       </div>
 
@@ -1880,6 +1886,15 @@ const aiTools = [
     raf = requestAnimationFrame(draw);
   }
   draw();
+
+  // Pause the animation while the tab is hidden to save CPU/battery
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      cancelAnimationFrame(raf);
+    } else {
+      draw();
+    }
+  });
 })();
 
 /* ═══════════════════════════════════════════
@@ -1899,7 +1914,12 @@ const moduleNames = { ai: 'mod_ai_title', ml: 'mod_ml_title', dl: 'mod_dl_title'
 
 // Restore system state from storage
 window.addEventListener('DOMContentLoaded', () => {
-  const savedLang = localStorage.getItem('ai_universe_lang');
+  let savedLang = null;
+  try {
+    savedLang = localStorage.getItem('ai_universe_lang');
+  } catch (e) {
+    // localStorage may be blocked (e.g. private browsing) — fall back to default language
+  }
   if (savedLang) {
     lang = savedLang;
   }
@@ -1909,7 +1929,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function setLanguage(selectedLang) {
   lang = selectedLang;
-  localStorage.setItem('ai_universe_lang', selectedLang);
+  try {
+    localStorage.setItem('ai_universe_lang', selectedLang);
+  } catch (e) {
+    // localStorage may be blocked (e.g. private browsing) — language just won't persist
+  }
 
   // Update layout direction & attributes
   const htmlEl = document.documentElement;
@@ -2052,18 +2076,24 @@ function closeHubOnOuterClick(e) {
   }
 }
 
-function filterCategory(cat) {
+// Close modal with Escape key for keyboard accessibility
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.getElementById('hub-modal').classList.contains('open')) {
+    closeHub();
+  }
+});
+
+function filterCategory(cat, evt) {
   activeCategory = cat;
-  
+
   // Highlight tab
   const tabsContainer = document.getElementById('hub-filter-tabs');
   tabsContainer.querySelectorAll('.filter-btn').forEach(btn => {
     btn.classList.remove('active');
   });
-  
-  e = window.event;
-  if (e && e.currentTarget) {
-    e.currentTarget.classList.add('active');
+
+  if (evt && evt.currentTarget) {
+    evt.currentTarget.classList.add('active');
   }
 
   filterHubTools();
