@@ -82,6 +82,13 @@ button {
 a { text-decoration: none; color: inherit; }
 svg { display: block; flex-shrink: 0; }
 
+/* Visible keyboard focus ring — accessibility + polish */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
 /* ═══════════════════════════════════════════
    SCROLLBAR
 ═══════════════════════════════════════════ */
@@ -148,6 +155,35 @@ svg { display: block; flex-shrink: 0; }
   filter: blur(80px);
   pointer-events: none;
   z-index: 0;
+  animation: drift1 22s ease-in-out infinite;
+}
+.hero-glow-2 {
+  position: absolute;
+  bottom: 10%; right: 20%;
+  width: 38vw; height: 38vw;
+  background: radial-gradient(circle, rgba(192,132,252,0.16) 0%, transparent 70%);
+  filter: blur(90px);
+  pointer-events: none;
+  z-index: 0;
+  animation: drift2 26s ease-in-out infinite;
+}
+@keyframes drift1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(4%, 6%) scale(1.08); }
+}
+@keyframes drift2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-5%, -4%) scale(1.1); }
+}
+
+/* Subtle film-grain texture for a tactile, premium finish */
+.grain-overlay {
+  position: fixed; inset: 0;
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 .hero-content {
@@ -545,6 +581,17 @@ html[dir="rtl"] .btn-primary:hover svg { transform: translateX(-4px); }
   border-color: var(--border-glow);
   transform: translateY(-4px);
   box-shadow: 0 12px 30px rgba(99,102,241,0.12);
+}
+
+/* Scroll-reveal: cards fade & rise into view as the user scrolls */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
 }
 .card-accent-line {
   position: absolute; top: 0; left: 0; right: 0; height: 3px;
@@ -1014,12 +1061,16 @@ html[dir="rtl"] .hub-card.featured::after {
 </head>
 <body>
 
+<!-- Subtle full-page film-grain texture -->
+<div class="grain-overlay"></div>
+
 <!-- ═══════════════════════════════════════════
      🏠 LANDING VIEW
 ═══════════════════════════════════════════ -->
 <div id="view-home" class="view active">
   <canvas id="hero-canvas"></canvas>
   <div class="hero-glow-1"></div>
+  <div class="hero-glow-2"></div>
 
   <div class="hero-content">
     <div class="hero-badge">
@@ -2179,6 +2230,36 @@ function renderHubTools(searchQuery = '', category = 'all') {
     container.appendChild(card);
   });
 }
+
+/* ═══════════════════════════════════════════
+   SCROLL-REVEAL ANIMATION FOR CONTENT CARDS
+═══════════════════════════════════════════ */
+(function() {
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const revealTargets = document.querySelectorAll('.card, .company-card, .method-card');
+
+    if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+      // Skip the animation entirely; just show everything immediately
+      revealTargets.forEach(el => el.classList.add('in-view'));
+      return;
+    }
+
+    revealTargets.forEach(el => el.classList.add('reveal'));
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+    revealTargets.forEach(el => io.observe(el));
+  });
+})();
 </script>
 </body>
 </html>
